@@ -1,0 +1,46 @@
+name: Governance
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  repository-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify required files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            README.md LICENSE CONTRIBUTING.md CHANGELOG.md .gitignore .env.example
+            .github/pull_request_template.md
+            .github/ISSUE_TEMPLATE/feature.md
+            .github/ISSUE_TEMPLATE/bug.md
+            docs/architecture.md docs/api.md docs/project-rubric.md
+          )
+          for path in "${required[@]}"; do
+            test -s "$path" || { echo "Missing or empty: $path"; exit 1; }
+          done
+      - name: Reject committed secrets and generated directories
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(^|/)(\.env|node_modules|\.venv|dist|coverage)(/|$)'; then
+            echo "Generated files or local secrets are tracked."
+            exit 1
+          fi
+      - name: Validate PR title
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        shell: bash
+        run: |
+          echo "$PR_TITLE" | grep -Eq '^(feat|fix|docs|test|refactor|perf|style|chore)(\([a-z0-9-]+\))?: .+' || {
+            echo "PR title must follow Conventional Commits."
+            exit 1
+          }
