@@ -116,7 +116,8 @@ async function submit() {
         演示账号：student / captain / admin<br />统一密码：Campus123!<br />演示注册请使用虚构信息。
       </p>
       <p v-else class="hint">
-        真实后端角色为 student / leader / admin；账号请联系团队负责人获取，请勿使用真实密码。
+        真实后端角色为 student / leader /
+        admin；账号请联系团队负责人获取，请勿使用真实密码。
       </p>
     </div>
   </section>

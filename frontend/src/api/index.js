@@ -28,7 +28,11 @@ export async function api(path, options = {}) {
       });
       return adaptResponse("/auth/login", logged);
     }
-    return adaptResponse(path, await request(realPath, realOptions), realOptions);
+    return adaptResponse(
+      path,
+      await request(realPath, realOptions),
+      realOptions,
+    );
   } catch (error) {
     throw adaptError(path, error);
   }

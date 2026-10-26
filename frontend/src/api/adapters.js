@@ -156,7 +156,9 @@ export function adaptResponse(path, data, options = {}) {
   if (pathname === "/projects") {
     const results = Array.isArray(data) ? data : data.results || [];
     return {
-      count: Array.isArray(data) ? results.length : (data.count ?? results.length),
+      count: Array.isArray(data)
+        ? results.length
+        : (data.count ?? results.length),
       results: results.map(normalizeProject),
     };
   }

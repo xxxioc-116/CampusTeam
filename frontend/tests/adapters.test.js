@@ -55,7 +55,12 @@ describe("后端适配 #7–#12", () => {
           project_type: "course",
           status: "recruiting",
           max_members: 5,
-          owner: { id: 9, username: "owner", display_name: "负责人", role: "leader" },
+          owner: {
+            id: 9,
+            username: "owner",
+            display_name: "负责人",
+            role: "leader",
+          },
         },
       ],
     });
@@ -83,7 +88,12 @@ describe("后端适配 #7–#12", () => {
   it("登录响应把 token 统一成 access_token", () => {
     const data = adaptResponse("/auth/login", {
       token: "abc",
-      user: { id: 1, username: "student", display_name: "林同学", role: "student" },
+      user: {
+        id: 1,
+        username: "student",
+        display_name: "林同学",
+        role: "student",
+      },
     });
     expect(data.access_token).toBe("abc");
     expect(data.user.team_id).toBeNull();
@@ -108,7 +118,10 @@ describe("后端适配 #7–#12", () => {
     );
     expect(friendly.status).toBe(501);
     expect(friendly.message).toContain("后端尚未实现");
-    const passthrough = adaptError("/projects", new ApiError("内容不存在", 404));
+    const passthrough = adaptError(
+      "/projects",
+      new ApiError("内容不存在", 404),
+    );
     expect(passthrough.status).toBe(404);
   });
 });
