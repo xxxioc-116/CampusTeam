@@ -6,7 +6,7 @@ CampusTeam 面向学科竞赛、课程项目、科研训练和创新创业活动
 
 ## 当前状态
 
-项目处于立项与工程治理阶段。仓库已建立评分对照、Issue/PR 模板、CI 治理检查、架构草案、API 草案、ADR、会议记录模板和个人贡献说明书模板。
+项目已进入后端 Alpha 实现阶段。当前已提供 Django/DRF 可运行骨架、Token 认证、角色权限、项目检索、团队申请/邀请闭环、审计日志、演示数据和自动化测试。
 
 ## 核心业务闭环
 
@@ -47,11 +47,13 @@ flowchart LR
 ```text
 CampusTeam/
 ├── .github/                 Issue、PR 模板与 CI
+├── campusteam/              Django 配置与根路由
+├── core/                    用户、项目、团队、申请邀请与审计模块
 ├── docs/                    架构、API、ADR、会议与贡献证据
-├── backend/                 Django/DRF 后端（迭代一建立）
 ├── frontend/                Vue 3 前端（迭代一建立）
 ├── analytics/               推荐与数据分析模块（迭代二建立）
-├── tests/                   集成与端到端测试
+├── manage.py
+├── requirements.txt
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
 └── LICENSE
@@ -78,14 +80,41 @@ CampusTeam/
 
 ## 本地启动
 
-应用代码将在迭代一建立。届时必须提供 `.env.example`，并保证以下流程可复现：
+需要 Python 3.11+。PowerShell 启动步骤：
 
-```bash
-cp .env.example .env
-docker compose up -d db
-cd backend && python -m pip install -r requirements.txt && python manage.py migrate && python manage.py runserver
-cd frontend && npm ci && npm run dev
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+# 请将 .env 中 DJANGO_SECRET_KEY 改成本机随机值
+python manage.py migrate
+python manage.py seed_demo --leader-password '<本地密码>' --student-password '<本地密码>'
+python manage.py runserver
 ```
+
+访问 `http://127.0.0.1:8000/api/v1/health`，返回 `{"status":"ok"...}` 即启动成功。
+
+运行测试及覆盖率：
+
+```powershell
+python -m coverage run manage.py test
+python -m coverage report -m
+```
+
+## 已实现 API
+
+- `GET /api/v1/health`
+- `POST /api/v1/auth/register`、`POST /api/v1/auth/login`
+- `GET/PATCH /api/v1/profiles/me`
+- `GET/POST /api/v1/projects`、`GET/PATCH /api/v1/projects/{id}`
+- `POST /api/v1/projects/{id}/applications`
+- `POST /api/v1/applications/{id}/transition`
+- `POST /api/v1/teams/{id}/invitations`
+- `POST /api/v1/invitations/{id}/transition`
+- `GET /api/v1/admin/audit-logs`
+
+除健康检查、注册和登录外，其余接口使用 `Authorization: Token <token>`。错误格式统一为 `code/message/details`。
 
 ## 协作规则
 
