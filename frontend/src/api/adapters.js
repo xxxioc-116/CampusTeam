@@ -1,5 +1,3 @@
-import { ApiError } from "./client.js";
-
 /**
  * 后端适配层：把 Django（codex/backend-owner-tasks 分支）的真实响应
  * 转换成页面期望的结构。演示模式下本文件不生效。
@@ -22,13 +20,6 @@ export const STATUS_LABEL = {
   active: "进行中",
   closed: "已结束",
 };
-
-// 后端尚未提供的接口（见 docs/frontend-backend-alignment.md）
-const UNSUPPORTED = [
-  /^\/teams\/[^/]+\/capability-matrix$/,
-  /^\/teams\/[^/]+\/gaps$/,
-  /^\/teams\/[^/]+\/recommendations/,
-];
 
 export function splitPath(path) {
   const [pathname, search = ""] = path.split("?");
@@ -111,11 +102,6 @@ export function adaptRequest(path, options = {}) {
     };
   }
 
-  // 画像：后端 UserSerializer 只接受 display_name
-  if (pathname === "/profiles/me" && options.method === "PATCH" && body) {
-    body = { display_name: body.display_name };
-  }
-
   return { path: nextPath, options: { ...options, body } };
 }
 
@@ -131,6 +117,9 @@ export function adaptResponse(path, data, options = {}) {
   }
 
   if (pathname === "/profiles/me") {
+    if (Object.hasOwn(data, "profile")) {
+      return { user: normalizeUser(data.user), profile: data.profile };
+    }
     const user = normalizeUser(data.user || data);
     if (options.method === "PATCH") {
       return {
@@ -167,12 +156,6 @@ export function adaptResponse(path, data, options = {}) {
 }
 
 /** 错误侧：把“后端还没有这个接口”翻译成可读文案 */
-export function adaptError(path, error) {
-  const { pathname } = splitPath(path);
-  if (error.status === 404 && UNSUPPORTED.some((re) => re.test(pathname)))
-    return new ApiError(
-      "该接口后端尚未实现（团队能力矩阵/缺口/推荐依赖 #5、#13–#18），当前请在演示模式下查看",
-      501,
-    );
+export function adaptError(_path, error) {
   return error;
 }
