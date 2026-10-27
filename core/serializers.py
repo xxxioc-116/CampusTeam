@@ -6,9 +6,14 @@ from .models import Application, Invitation, Project, RequestStatus, Team, TeamM
 
 
 class UserSerializer(serializers.ModelSerializer):
+    team_id = serializers.SerializerMethodField()
+
+    def get_team_id(self, user):
+        return user.team_memberships.order_by("team_id").values_list("team_id", flat=True).first()
+
     class Meta:
         model = User
-        fields = ["id", "username", "display_name", "role"]
+        fields = ["id", "username", "display_name", "role", "team_id"]
         read_only_fields = ["id", "role"]
 
 

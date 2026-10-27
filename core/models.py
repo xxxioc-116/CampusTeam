@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from .recommendation_models import RecommendationProfile, RecommendationRequirement  # noqa: F401
+
 
 class User(AbstractUser):
     class Role(models.TextChoices):
