@@ -16,3 +16,12 @@ coverage/
 media/
 staticfiles/
 *.sqlite3
+*.egg-info/
+build/
+test-results/
+playwright-report/
+.demo-state.json
+.demo-logs/
+tmp/
+.tools/
+.delivery/
