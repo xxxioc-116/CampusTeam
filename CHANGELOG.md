@@ -2,6 +2,8 @@
 
 ## Unreleased — Recommendation
 
+- Add stable weight identifiers, contribution explanations and fixed-seed reproducibility tests.
+
 - Add validated five-dimensional normalization, maximum team aggregation and actual-gap complement scoring (#13, #14).
 - Add configurable five-factor stable Top-K and score-consistent explanations (#15, #16).
 - Add reproducible random/similar/complement experiments and recommendation CI (#17, #26).

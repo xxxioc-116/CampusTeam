@@ -1,6 +1,8 @@
 """Scores are normalized internally to [0, 1]; public output uses [0, 100]."""
 
 from dataclasses import dataclass, field
+from hashlib import sha256
+from json import dumps
 from math import isclose, isfinite
 from numbers import Real
 
@@ -12,7 +14,7 @@ VERSION = "baseline-v1"
 def number(value, maximum=100):
     if isinstance(value, bool) or not isinstance(value, Real):
         raise ValueError("能力值必须是有限数字")
-    if not isfinite(value) or not 0 <= value <= maximum:
+    if not 0 <= value <= maximum or not isfinite(value):
         raise ValueError(f"数值必须介于 0 和 {maximum}")
     return float(value) / maximum
 
@@ -56,7 +58,8 @@ def slots(values):
         minutes = []
         for key in ("start", "end"):
             value = item[key]
-            if not isinstance(value, str) or len(value) != 5 or value[2] != ":":
+            if (not isinstance(value, str) or len(value) != 5 or value[2] != ":"
+                    or not value.isascii() or not (value[:2] + value[3:]).isdecimal()):
                 raise ValueError("时间格式必须为 HH:mm")
             try:
                 h, m = int(value[:2]), int(value[3:])
@@ -133,6 +136,11 @@ def recommend(members, required, candidates, *, required_skills=(), availability
                      experience=len(wanted_experience & p.experience) / len(wanted_experience) if wanted_experience else 0.0)
         contributions = {k: v * w[k] * 100 for k, v in parts.items()}
         reasons = [f"可补齐{DIMENSIONS[i]} {v * 100:.2f} 分" for i, v in enumerate(filled) if v > 0]
+        detail = dict(skill=f"技能命中 {len(wanted_skills & p.skills)}/{len(wanted_skills)} 项",
+                      time=f"协作时间覆盖 {parts['time'] * 100:.2f}%",
+                      goal="合作目标一致", experience="经历类别匹配")
+        reasons.extend(f"{detail[k]}，贡献 {contributions[k]:.2f} 分"
+                       for k in detail if contributions[k] > 0)
         risks = []
         if not any(filled):
             risks.append("未补齐当前能力缺口")
@@ -147,4 +155,5 @@ def recommend(members, required, candidates, *, required_skills=(), availability
                             contributions=contributions, reasons=reasons, risks=risks,
                             filled=[v * 100 for v in filled]))
     results.sort(key=lambda r: (-r["score"], r["id"]))
-    return dict(weight_version=VERSION if w == WEIGHTS else "custom-v1", weights=w, results=results[:top_k])
+    version = VERSION if w == WEIGHTS else "custom-" + sha256(dumps(w, sort_keys=True).encode()).hexdigest()[:12]
+    return dict(weight_version=version, weights=w, results=results[:top_k])

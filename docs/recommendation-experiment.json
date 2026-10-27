@@ -1,0 +1,107 @@
+{
+  "seed": 20261027,
+  "repeats": 7,
+  "dataset": "synthetic uniform integer abilities 0..100",
+  "note": "Algorithm timing only; API and database latency measured separately. Synthetic results are not user satisfaction evidence.",
+  "reports": [
+    {
+      "candidates": 100,
+      "median_ms": 0.5781999789178371,
+      "max_ms": 0.8008999284356833,
+      "mean_gap_coverage_at_5": {
+        "random": 0.32375,
+        "similar": 0.39375,
+        "complement": 0.775
+      },
+      "selected_ids": {
+        "random": [
+          11,
+          36,
+          70,
+          98,
+          9
+        ],
+        "similar": [
+          62,
+          26,
+          50,
+          16,
+          66
+        ],
+        "complement": [
+          34,
+          67,
+          38,
+          88,
+          68
+        ]
+      }
+    },
+    {
+      "candidates": 500,
+      "median_ms": 2.8626000275835395,
+      "max_ms": 4.522799979895353,
+      "mean_gap_coverage_at_5": {
+        "random": 0.2275,
+        "similar": 0.03125,
+        "complement": 0.91125
+      },
+      "selected_ids": {
+        "random": [
+          349,
+          418,
+          452,
+          492,
+          53
+        ],
+        "similar": [
+          306,
+          24,
+          308,
+          33,
+          162
+        ],
+        "complement": [
+          3,
+          386,
+          490,
+          501,
+          480
+        ]
+      }
+    },
+    {
+      "candidates": 1000,
+      "median_ms": 5.8376999804750085,
+      "max_ms": 6.467800005339086,
+      "mean_gap_coverage_at_5": {
+        "random": 0.46625,
+        "similar": 0.095,
+        "complement": 0.93
+      },
+      "selected_ids": {
+        "random": [
+          67,
+          271,
+          980,
+          4,
+          826
+        ],
+        "similar": [
+          128,
+          132,
+          34,
+          928,
+          419
+        ],
+        "complement": [
+          145,
+          193,
+          292,
+          688,
+          236
+        ]
+      }
+    }
+  ]
+}

@@ -13,7 +13,7 @@ class RecommendationTests(unittest.TestCase):
 
     def test_invalid_vectors(self):
         for value in ([0], "12345", [True] * 5, [-1] * 5, [101] * 5,
-                      [float("nan")] * 5, [float("inf")] * 5, ["50"] * 5):
+                      [float("nan")] * 5, [float("inf")] * 5, ["50"] * 5, [10**1000] * 5):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 vector(value)
 
@@ -42,7 +42,9 @@ class RecommendationTests(unittest.TestCase):
                      dict(day=8, start="18:00", end="20:00"),
                      dict(day=1, start="24:00", end="25:00"),
                      dict(day=1, start="20:00", end="18:00"),
-                     dict(day=1, start="oops!", end="20:00"), {}):
+                     dict(day=1, start="oops!", end="20:00"),
+                     dict(day=1, start="+1:00", end="20:00"),
+                     dict(day=1, start="１８:００", end="20:00"), {}):
             with self.subTest(item=item), self.assertRaises(ValueError):
                 slots([item])
 
@@ -54,8 +56,22 @@ class RecommendationTests(unittest.TestCase):
                       goal="学习", experience=["课程"])["results"][0]
         self.assertAlmostEqual(r["score"], 100)
         self.assertAlmostEqual(sum(r["contributions"].values()), r["score"])
-        self.assertEqual(len(r["reasons"]), 5)
+        self.assertEqual(len(r["reasons"]), 9)
         self.assertEqual(r["risks"], [])
+
+    def test_configurable_weights_change_ranking_and_are_traceable(self):
+        complement = self.profile(1, [100] * 5)
+        skill = self.profile(2, [20] * 5, skills=["Python"])
+        kwargs = dict(required_skills=["Python"])
+        baseline = recommend([], [100] * 5, [skill, complement], **kwargs)
+        self.assertEqual(baseline["results"][0]["id"], 1)
+        config = dict(complement=.1, skill=.9, time=0, goal=0, experience=0)
+        changed = recommend([], [100] * 5, [skill, complement], custom_weights=config, **kwargs)
+        self.assertEqual(changed["results"][0]["id"], 2)
+        self.assertNotEqual(baseline["weight_version"], changed["weight_version"])
+        reordered = recommend([], [100] * 5, [complement, skill], custom_weights=dict(reversed(list(config.items()))), **kwargs)
+        self.assertEqual(changed["weight_version"], reordered["weight_version"])
+        self.assertIn("技能命中 1/1 项，贡献 90.00 分", changed["results"][0]["reasons"])
 
     def test_sort_k_and_members_exclusion(self):
         candidates = [self.profile(i) for i in (3, 2, 1)]
