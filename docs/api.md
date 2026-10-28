@@ -116,11 +116,20 @@ applied 为兼容原页面的占位字段，不应用来表示本团队成员能
 默认权重为 baseline-v1；自定义权重使用可复现摘要标识，响应同时携带完整配置。
 总分按未舍入贡献之和计算、降序排列，并列按用户 id 升序。
 
+### 团队健康度与风险预警（#19–#21）
+
+`GET /teams/{id}/health`：本团队成员、队长或 `User.Role.ADMIN` 可读；匿名 401，
+越权 403，不存在的团队 404，需求未配置 400。返回五维健康度（capability/
+skill/time/goal/experience，权重与推荐模块一致）、0–100 总分、healthy/watch/
+at_risk 分档与四类风险（critical_gap、capability_duplication、
+common_time_insufficient、goal_inconsistency）。时间重合度取全员交集；
+指标公式、固定阈值与算例见 docs/team-health.md，设计决策见 ADR 0003。
+
 ### 错误与限制
 
 校验错误返回 400、code=validation_error；权限错误 permission_denied，认证错误 not_authenticated。
 错误格式由 core.exceptions 统一生成。推荐结果请求时计算，不保存历史画像快照；响应配置标识不能替代完整历史重放。
-健康度、风险看板及管理员统计不是本模块已交付功能，仍由相应负责人完成。
+健康度与四类风险预警已随 #19–#21 交付（见上节）；风险看板页与管理员统计仍由 #23 等任务完成。
 
 ### 错误响应示例（401 / 403 / 409）
 

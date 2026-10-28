@@ -2,6 +2,7 @@
 
 ## Unreleased — Recommendation
 
+- Add five-dimension team health scoring, common-time/goal alignment and four-type risk warnings via GET /teams/{id}/health, with fixed documented thresholds and no new database models (#19, #20, #21).
 - Verify real profile persistence and invitation acceptance recompute team capabilities (#27).
 - Add backend/frontend/integration quality gates with coverage and locked dependency installs (#26).
 - Run the locked local Playwright CLI and clean only the generated temporary test database on exit.
