@@ -6,6 +6,7 @@ from .recommendation_api import (
     TeamRecommendationsView, TeamRequirementView,
 )
 
+from .team_health_api import TeamHealthView
 from .views import (
     ApplicationTransitionView,
     AuditLogView,
@@ -29,6 +30,7 @@ urlpatterns = [
     path("teams/<int:pk>/capability-matrix", TeamMatrixView.as_view()),
     path("teams/<int:pk>/gaps", TeamGapsView.as_view()),
     path("teams/<int:pk>/recommendations", TeamRecommendationsView.as_view()),
+    path("teams/<int:pk>/health", TeamHealthView.as_view()),
     path("applications/<int:pk>/transition", ApplicationTransitionView.as_view()),
     path("teams/<int:pk>/invitations", TeamInvitationView.as_view()),
     path("invitations/<int:pk>/transition", InvitationTransitionView.as_view()),
