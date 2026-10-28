@@ -1,0 +1,74 @@
+name: Quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_DEBUG: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: 'python -m pip install --only-binary=:all: --require-hashes -r requirements-ci.txt'
+      - run: python -m ruff check analytics tests core campusteam manage.py
+      - run: python manage.py check
+      - run: python manage.py makemigrations --check --dry-run
+      - run: python -m coverage run --source=analytics,core --omit='*/tests/*,*/migrations/*,*/management/*,analytics/experiment.py' manage.py test core tests
+      - run: python -m coverage report --fail-under=80
+      - run: python -m build --no-isolation
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test -- --coverage
+      - run: npm run build
+  integration:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_DEBUG: 'true'
+      DB_NAME: /tmp/campusteam-integration.sqlite3
+      CAMPUS_DEMO_PASSWORD: ${{ github.run_id }}-demo-only-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: 'python -m pip install --only-binary=:all: --require-hashes -r requirements-ci.txt'
+      - run: python manage.py migrate --noinput
+      - run: python manage.py seed_recommendation_demo
+      - run: npm ci --ignore-scripts
+        working-directory: frontend
+      - run: node node_modules/@playwright/test/cli.js install --with-deps chromium
+        working-directory: frontend
+      - run: node node_modules/@playwright/test/cli.js test --config playwright.real.config.js
+        working-directory: frontend
+  quality-gate:
+    if: always()
+    needs: [backend, frontend, integration]
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          BACKEND: ${{ needs.backend.result }}
+          FRONTEND: ${{ needs.frontend.result }}
+          INTEGRATION: ${{ needs.integration.result }}
+        run: test "$BACKEND" = success && test "$FRONTEND" = success && test "$INTEGRATION" = success

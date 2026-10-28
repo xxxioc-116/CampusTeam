@@ -1,10 +1,9 @@
 from django.db import IntegrityError
 from django.test import TestCase
-from django.urls import reverse
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from core.models import Application, AuditLog, Project, RequestStatus, Skill, TeamMember, User, UserSkill
+from core.models import AuditLog, Project, RequestStatus, Skill, TeamMember, User, UserSkill
 
 
 class ApiTestCase(TestCase):
@@ -135,7 +134,7 @@ class ApiTestCase(TestCase):
         )
 
     def test_audit_log_is_admin_only_and_paginated(self):
-        project = self.create_project()
+        self.create_project()
         self.auth(self.student)
         self.assertEqual(self.client.get("/api/v1/admin/audit-logs").status_code, 403)
         self.auth(self.admin)

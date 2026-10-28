@@ -1,6 +1,4 @@
-from django.db import IntegrityError
 from django.db.models import Q
-from django.http import JsonResponse
 from rest_framework import generics, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action, api_view, permission_classes

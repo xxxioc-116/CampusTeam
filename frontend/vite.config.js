@@ -16,6 +16,17 @@ export default defineConfig(({ mode }) => {
       environment: "jsdom",
       include: ["tests/**/*.test.js"],
       restoreMocks: true,
+      coverage: {
+        provider: "v8",
+        include: [
+          "src/api/adapters.js",
+          "src/api/client.js",
+          "src/auth.js",
+          "src/domain/**/*.js",
+        ],
+        reporter: ["text", "lcov"],
+        thresholds: { lines: 60, statements: 60, functions: 60, branches: 40 },
+      },
       // 路由测试会懒加载真实页面组件，Windows 上首次加载 element-plus 可能超过 5 秒默认上限
       testTimeout: 20000,
       hookTimeout: 20000,

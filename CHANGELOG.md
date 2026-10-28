@@ -2,6 +2,10 @@
 
 ## Unreleased — Recommendation
 
+- Verify real profile persistence and invitation acceptance recompute team capabilities (#27).
+- Add backend/frontend/integration quality gates with coverage and locked dependency installs (#26).
+- Run the locked local Playwright CLI and clean only the generated temporary test database on exit.
+
 - Remove Django staff bypasses from recommendation team reads and requirement writes; enforce business ADMIN, leadership and membership rules with four regression tests (#18).
 
 - Lock CI dependencies with wheel SHA-256 verification, disable npm install scripts, and run installed Playwright directly (SonarCloud supply-chain findings).
