@@ -55,7 +55,7 @@ def profile_for(user):
 
 def team_for(request, pk):
     team = get_object_or_404(Team.objects.select_related("project", "leader"), pk=pk)
-    if not (request.user.is_staff or request.user.role == User.Role.ADMIN or team.leader_id == request.user.id
+    if not (request.user.role == User.Role.ADMIN or team.leader_id == request.user.id
             or TeamMember.objects.filter(team=team, user=request.user).exists()):
         raise PermissionDenied("仅团队成员或管理员可查看")
     return team
@@ -109,7 +109,7 @@ class TeamRequirementView(GenericAPIView):
 
     def patch(self, request, pk):
         team = team_for(request, pk)
-        if team.leader_id != request.user.id and not (request.user.is_staff or request.user.role == User.Role.ADMIN):
+        if team.leader_id != request.user.id and request.user.role != User.Role.ADMIN:
             raise PermissionDenied("仅队长或管理员可配置需求")
         with transaction.atomic():
             obj, _ = RecommendationRequirement.objects.get_or_create(team=team)
