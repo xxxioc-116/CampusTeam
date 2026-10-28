@@ -117,6 +117,23 @@ class ApiTestCase(TestCase):
         self.assertEqual(accepted.status_code, 200)
         self.assertTrue(AuditLog.objects.filter(action="invitation.accept").exists())
 
+    def test_role_admin_can_invite_without_django_staff_flag(self):
+        project = self.create_project()
+        self.assertFalse(self.admin.is_staff)
+
+        self.auth(self.admin)
+        response = self.client.post(
+            f"/api/v1/teams/{project.team.id}/invitations",
+            {"invitee_id": self.other.id},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["invitee"]["id"], self.other.id)
+        self.assertTrue(
+            AuditLog.objects.filter(actor=self.admin, action="invitation.create").exists()
+        )
+
     def test_audit_log_is_admin_only_and_paginated(self):
         project = self.create_project()
         self.auth(self.student)
