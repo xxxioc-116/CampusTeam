@@ -2,6 +2,8 @@
 
 ## Unreleased — Recommendation
 
+- Lock CI dependencies with wheel SHA-256 verification, disable npm install scripts, and run installed Playwright directly (SonarCloud supply-chain findings).
+
 - Persist recommendation profiles and validated team weights; expose authenticated recommendation APIs and real-Token performance tests (#18).
 
 - Add stable weight identifiers, contribution explanations and fixed-seed reproducibility tests.
