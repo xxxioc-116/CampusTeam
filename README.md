@@ -6,7 +6,7 @@ CampusTeam 面向学科竞赛、课程项目、科研训练和创新创业活动
 
 ## 当前状态
 
-当前本地集成分支另含推荐算法、真实推荐 API、画像持久化和前端适配。个人任务、运行方法、验证结果与未完成的 GitHub 验收步骤见 [本地交付说明](docs/local-handoff.md) 和 [验证报告](docs/recommendation-validation.md)。这不代表相应变更已合并到 main。
+推荐算法、真实推荐 API、画像持久化、Vue 前端和真实浏览器联调现已合并到 `main`。个人任务、运行方法与验证结果见 [本地交付说明](docs/local-handoff.md) 和 [验证报告](docs/recommendation-validation.md)；尚未完成的 P2 功能、总验收及发布工作继续按 Issues 和里程碑推进。
 
 项目已进入后端 Alpha 实现阶段。当前已提供 Django/DRF 可运行骨架、Token 认证、角色权限、项目检索、团队申请/邀请闭环、审计日志、演示数据和自动化测试。
 
