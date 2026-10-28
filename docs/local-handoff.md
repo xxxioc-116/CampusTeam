@@ -6,10 +6,10 @@
 |---|---|---|
 | feature/13-recommendation-delivery | #13–#17：向量、缺口、五项权重、解释、实验 | main |
 | feature/18-recommendation-delivery | #18：持久化、Token API、权限、性能；PR #32 已合并 | main |
-| feature/27-integration-delivery | #27 联调、#26 CI；仅前端 #30 待合并 | feature/27-integration-dependencies |
+| feature/27-integration-delivery | #27 联调、#26 CI；已同步最新 main，前端 #30 待合并 | main |
 
 依赖组合分支只保留已有后端、算法和前端的历史及内容，用于缩小 PR 差异；不单独合并。
-#29、#31、#32 已合并。当前 #33 可独立审查联调与 CI 差异；待前端 #30 合并后，更新 #33 到最新 main、切换 base 为 main，再执行 CI 和最终 Review。依赖组合分支不单独合并。
+#29、#31、#32 已合并。#33 已同步最新 main 并将 base 改为 main。前端 #30 尚未合并，因此当前差异暂时包含前端依赖；#30 合并后再次同步 main，确认差异缩小并完成最终 CI/Review。依赖组合分支仅保留历史，不单独合并。
 基础后端属于 #29 作者，原始前端属于 #30 作者，本次不把队友代码计作个人原创。
 #18 已由 PR #32 合并自动关闭；#27 等待 #33 验收，#26 的管理员门禁配置仍待完成。未代替非作者审批。
 
