@@ -24,6 +24,8 @@
 
 ### Added
 
+- Add profile edit cancellation that restores the latest loaded or saved server snapshot, with component regression coverage (#9).
+
 - Add the Vue 3 frontend for issues #7-#12, including authentication, profile editing, project discovery, team capability visualization, and explainable recommendations.
 - Add frontend unit and end-to-end tests, API alignment documentation, and a dedicated lint/format/test/build CI workflow.
 - Document that profile, team matrix, gap analysis, and recommendation flows still require real-backend integration before issues #9, #11, and #12 can close.
