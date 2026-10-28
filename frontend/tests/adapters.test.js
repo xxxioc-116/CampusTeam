@@ -36,12 +36,31 @@ describe("后端适配 #7–#12", () => {
     expect(options.body).toEqual({ invitee_id: 101, message: "邀请" });
   });
 
-  it("画像 PATCH 只提交后端支持的 display_name", () => {
+  it("画像 PATCH 保留真实后端支持的完整画像", () => {
     const { options } = adaptRequest("/profiles/me", {
       method: "PATCH",
       body: { display_name: "林同学", bio: "简介", abilities: [1, 2, 3, 4, 5] },
     });
-    expect(options.body).toEqual({ display_name: "林同学" });
+    expect(options.body).toEqual({
+      display_name: "林同学",
+      bio: "简介",
+      abilities: [1, 2, 3, 4, 5],
+    });
+  });
+
+  it("真实画像响应直接回显服务器保存的数据", () => {
+    const profile = {
+      display_name: "真实画像",
+      abilities: [80, 40, 60, 70, 50],
+      skills: ["Python"],
+    };
+    const data = adaptResponse("/profiles/me", {
+      user: { id: 1, team_id: 3 },
+      profile,
+    });
+    expect(data.profile).toEqual(profile);
+    expect(data.profile.backend_partial).toBeUndefined();
+    expect(data.user.team_id).toBe(3);
   });
 
   it("项目响应映射为页面字段，缺失值给安全默认", () => {
@@ -111,13 +130,13 @@ describe("后端适配 #7–#12", () => {
     expect(data.profile.backend_partial).toBe(true);
   });
 
-  it("未实现的团队接口给出明确提示而不是通用网络错误", () => {
+  it("已实现的团队接口保留真实 404 错误", () => {
     const friendly = adaptError(
       "/teams/1/capability-matrix",
       new ApiError("内容不存在", 404),
     );
-    expect(friendly.status).toBe(501);
-    expect(friendly.message).toContain("后端尚未实现");
+    expect(friendly.status).toBe(404);
+    expect(friendly.message).toContain("内容不存在");
     const passthrough = adaptError(
       "/projects",
       new ApiError("内容不存在", 404),
