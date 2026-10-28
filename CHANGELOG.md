@@ -2,6 +2,8 @@
 
 ## Unreleased — Recommendation
 
+- Remove Django staff bypasses from recommendation team reads and requirement writes; enforce business ADMIN, leadership and membership rules with four regression tests (#18).
+
 - Lock CI dependencies with wheel SHA-256 verification, disable npm install scripts, and run installed Playwright directly (SonarCloud supply-chain findings).
 
 - Persist validated team scoring weights with stable configuration identifiers and contribution-consistent explanations (#15, #16, #18).

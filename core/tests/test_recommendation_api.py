@@ -11,6 +11,8 @@ class RecommendationApiTests(TestCase):
         cls.owner = User.objects.create_user(username="owner", role="leader")
         cls.candidate = User.objects.create_user(username="candidate")
         cls.outsider = User.objects.create_user(username="outsider")
+        cls.staff_student = User.objects.create_user(username="staff-student", role=User.Role.STUDENT, is_staff=True)
+        cls.business_admin = User.objects.create_user(username="business-admin", role=User.Role.ADMIN, is_staff=False)
         cls.project = Project.objects.create(owner=cls.owner, title="Test", project_type="course", max_members=4)
         cls.team = Team.objects.create(project=cls.project, leader=cls.owner)
         TeamMember.objects.create(team=cls.team, user=cls.owner)
@@ -35,6 +37,54 @@ class RecommendationApiTests(TestCase):
             self.assertEqual(self.get(endpoint).status_code, 403)
             self.client.credentials()
             self.assertEqual(self.get(endpoint).status_code, 401)
+
+    def test_staff_student_cannot_read_another_teams_data(self):
+        self.auth(self.staff_student)
+        self.assertTrue(self.staff_student.is_staff)
+        self.assertEqual(self.staff_student.role, User.Role.STUDENT)
+        for endpoint in ("capability-matrix", "gaps", "recommendations"):
+            with self.subTest(endpoint=endpoint):
+                response = self.get(endpoint)
+                self.assertEqual(response.status_code, 403)
+                self.assertEqual(response.data["code"], "permission_denied")
+
+    def test_staff_student_member_cannot_change_team_requirements(self):
+        # Pass the membership gate so this independently exercises the write gate.
+        TeamMember.objects.create(team=self.team, user=self.staff_student)
+        self.auth(self.staff_student)
+        requirement = RecommendationRequirement.objects.get(team=self.team)
+        before = (requirement.abilities, requirement.goal, requirement.weights)
+        path = f"/api/v1/teams/{self.team.id}/recommendation-requirements"
+        response = self.client.patch(path, {"abilities": [99] * 5, "goal": "unauthorized"}, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["code"], "permission_denied")
+        requirement.refresh_from_db()
+        self.assertEqual((requirement.abilities, requirement.goal, requirement.weights), before)
+
+    def test_business_admin_without_staff_can_read_team_data(self):
+        self.auth(self.business_admin)
+        self.assertFalse(self.business_admin.is_staff)
+        self.assertFalse(TeamMember.objects.filter(team=self.team, user=self.business_admin).exists())
+        matrix = self.get("capability-matrix")
+        self.assertEqual(matrix.status_code, 200)
+        self.assertEqual(matrix.data["current"], [80, 20, 0, 0, 0])
+        missing = self.get("gaps")
+        self.assertEqual(missing.status_code, 200)
+        self.assertEqual(missing.data["results"][0]["gap"], 60)
+        recommendations = self.get("recommendations")
+        self.assertEqual(recommendations.status_code, 200)
+        self.assertEqual(recommendations.data["results"][0]["id"], self.candidate.id)
+
+    def test_business_admin_without_staff_can_update_team_requirements(self):
+        self.auth(self.business_admin)
+        path = f"/api/v1/teams/{self.team.id}/recommendation-requirements"
+        config = dict(complement=1, skill=0, time=0, goal=0, experience=0)
+        response = self.client.patch(path, {"abilities": [90] * 5, "goal": "学习", "weights": config}, format="json")
+        self.assertEqual(response.status_code, 200)
+        requirement = RecommendationRequirement.objects.get(team=self.team)
+        self.assertEqual(requirement.abilities, [90] * 5)
+        self.assertEqual(requirement.goal, "学习")
+        self.assertEqual(requirement.weights, config)
 
     def test_profile_persistence_and_validation(self):
         self.auth(self.candidate)
