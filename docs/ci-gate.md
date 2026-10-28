@@ -3,13 +3,15 @@
 `quality.yml` 在 PR 和 main 推送时运行：
 
 - backend：安装依赖、全部后端 Python lint、Django 检查、迁移漂移检查、测试、80% 业务覆盖率、sdist/wheel 构建。
-- frontend：npm ci、ESLint、格式检查、Vitest 覆盖率、生产构建。
+- frontend：npm ci --ignore-scripts、ESLint、格式检查、Vitest 覆盖率、生产构建。
 - integration：临时 SQLite、迁移和合成数据、非 Mock Chromium 真实接口测试。
 - quality-gate：即使上游失败或跳过也执行；只有三个任务均成功才成功。
 
 独立 `recommendation.yml` 另执行算法 90% 覆盖率门槛、包构建与固定种子实验，并上传实验 JSON。
 `governance.yml` 检查必需文件、受禁生成物和 PR 标题。
 前端覆盖率门槛覆盖 auth、adapters/client、domain；不代表全部 Vue 页面覆盖率。
+
+Python 安装统一使用 requirements-ci.txt 固定直接/传递版本和 wheel 哈希，强制 --require-hashes 与 --only-binary；包构建使用已锁定工具。Playwright 直接从 node_modules 调用，不临时下载 CLI。
 
 ## 管理员配置
 

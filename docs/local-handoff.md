@@ -1,17 +1,17 @@
 # w44504143-png 任务交付
 
-日期：2026-10-27。任务 #13–#18，协作任务 #26、#27。
+更新日期：2026-10-28。任务 #13–#18，协作任务 #26、#27。
 
 | 交付分支 | 内容 | PR 基线 |
 |---|---|---|
 | feature/13-recommendation-delivery | #13–#17：向量、缺口、五项权重、解释、实验 | main |
-| feature/18-recommendation-delivery | #18：持久化、Token API、权限、性能；依赖算法及 #29 | codex/backend-owner-tasks |
-| feature/27-integration-delivery | #27 联调、#26 CI；依赖 API 及 #30 | feature/27-integration-dependencies |
+| feature/18-recommendation-delivery | #18：持久化、Token API、权限、性能；PR #32 已合并 | main |
+| feature/27-integration-delivery | #27 联调、#26 CI；仅前端 #30 待合并 | feature/27-integration-dependencies |
 
 依赖组合分支只保留已有后端、算法和前端的历史及内容，用于缩小 PR 差异；不单独合并。
-待 #29、#30 和算法/API PR 合并后，将后续 PR 更新到最新 main 并重新运行 CI。
+#29、#31、#32 已合并。当前 #33 可独立审查联调与 CI 差异；待前端 #30 合并后，更新 #33 到最新 main、切换 base 为 main，再执行 CI 和最终 Review。依赖组合分支不单独合并。
 基础后端属于 #29 作者，原始前端属于 #30 作者，本次不把队友代码计作个人原创。
-未代替非作者审批，也未合并或关闭 Issues。
+#18 已由 PR #32 合并自动关闭；#27 等待 #33 验收，#26 的管理员门禁配置仍待完成。未代替非作者审批。
 
 ## 复现检查
 
@@ -22,20 +22,20 @@ $env:DJANGO_DEBUG='true'
 .\.venv\Scripts\python manage.py makemigrations --check --dry-run
 .\.venv\Scripts\python -m coverage run --source=analytics,core --omit='*/tests/*,*/migrations/*,*/management/*,analytics/experiment.py' manage.py test core tests
 .\.venv\Scripts\python -m coverage report --fail-under=80
-.\.venv\Scripts\python -m build
+.\.venv\Scripts\python -m build --no-isolation
 .\.venv\Scripts\python -m analytics.experiment
 Set-Location frontend
-npm ci
+npm ci --ignore-scripts
 npm run lint
 npm run format:check
 npm test -- --coverage
 npm run build
-npx playwright install chromium
+node node_modules/@playwright/test/cli.js install chromium
 Set-Location ..
 .\scripts\test-real.ps1
 ```
 
-先安装 requirements.txt、ruff==0.14.2、build==1.3.0，并在 frontend 执行 npm ci。
+先执行 python -m pip install --only-binary=:all: --require-hashes -r requirements-ci.txt，再在 frontend 执行 npm ci --ignore-scripts。
 真实测试创建独立 SQLite 和随机口令，使用端口 8001/5174，不使用 Mock。
 测试通过浏览器发邀请，以候选人真实 Token 调用接受接口，再确认页面重算；没有宣称已实现邀请收件箱。
 结果和性能边界见 recommendation-validation.md。
