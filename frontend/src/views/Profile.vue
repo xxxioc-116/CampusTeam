@@ -11,6 +11,8 @@ const loading = ref(true),
   saveError = ref(""),
   partial = ref(false), // 后端是否只支持部分字段（当前仅姓名）
   skillsText = ref("");
+let savedSnapshot = null;
+const clone = (value) => JSON.parse(JSON.stringify(value));
 const form = reactive({
   display_name: "",
   bio: "",
@@ -20,7 +22,8 @@ const form = reactive({
   experience: "",
   availability: [],
 });
-function apply(profile) {
+function apply(profile, remember = true) {
+  const next = clone(profile || {});
   Object.assign(
     form,
     {
@@ -32,10 +35,23 @@ function apply(profile) {
       experience: "",
       availability: [],
     },
-    profile || {},
+    next,
   );
   skillsText.value = form.skills.join(", ");
   partial.value = Boolean(profile?.backend_partial);
+  saveError.value = "";
+  if (remember) {
+    savedSnapshot = {
+      profile: clone(form),
+      partial: partial.value,
+    };
+  }
+}
+function cancel() {
+  if (!savedSnapshot || saving.value) return;
+  apply(savedSnapshot.profile, false);
+  partial.value = savedSnapshot.partial;
+  ElMessage.info("已恢复最近一次保存的画像");
 }
 async function load() {
   loading.value = true;
@@ -173,6 +189,9 @@ onMounted(load);
       </section>
       <div class="save-bar">
         <p v-if="saveError" role="alert" class="error">{{ saveError }}</p>
+        <el-button type="button" :disabled="saving" @click="cancel"
+          >取消修改</el-button
+        >
         <el-button native-type="submit" type="primary" :loading="saving"
           >保存画像</el-button
         >
