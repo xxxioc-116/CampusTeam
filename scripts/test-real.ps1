@@ -31,7 +31,11 @@ try {
 } finally {
     Set-Location -LiteralPath $originalLocation
     foreach ($name in $variableNames) {
-        [Environment]::SetEnvironmentVariable($name, $originalEnvironment[$name], 'Process')
+        if ($null -eq $originalEnvironment[$name]) {
+            Remove-Item -LiteralPath ("Env:" + $name) -ErrorAction SilentlyContinue
+        } else {
+            [Environment]::SetEnvironmentVariable($name, $originalEnvironment[$name], 'Process')
+        }
     }
     foreach ($suffix in @('', '-wal', '-shm', '-journal')) {
         $temporaryPath = [IO.Path]::GetFullPath($demoDbPath + $suffix)
