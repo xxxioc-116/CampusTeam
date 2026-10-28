@@ -32,12 +32,12 @@ flowchart TB
 
 ## 核心数据模型
 
+### 现状 ER（Django 迁移已落库，与 `core/models.py`、`core/recommendation_models.py` 一致）
+
 ```mermaid
 erDiagram
     USER ||--o{ USER_SKILL : has
     SKILL ||--o{ USER_SKILL : classifies
-    USER ||--o{ EXPERIENCE : owns
-    USER ||--o{ AVAILABILITY : provides
     USER ||--o{ PROJECT : creates
     PROJECT ||--o{ PROJECT_SKILL_REQUIREMENT : requires
     SKILL ||--o{ PROJECT_SKILL_REQUIREMENT : defines
@@ -48,10 +48,25 @@ erDiagram
     USER ||--o{ APPLICATION : submits
     TEAM ||--o{ INVITATION : sends
     USER ||--o{ INVITATION : receives
+    USER ||--o| RECOMMENDATION_PROFILE : measures
+    TEAM ||--o| RECOMMENDATION_REQUIREMENT : configures
+    USER ||--o{ AUDIT_LOG : records
+```
+
+### 规划实体（尚未落库，不得描述为已实现）
+
+```mermaid
+erDiagram
+    USER ||--o{ EXPERIENCE : owns
+    USER ||--o{ AVAILABILITY : provides
     PROJECT ||--o{ MATCH_RESULT : produces
     USER ||--o{ MATCH_RESULT : candidate
     TEAM ||--o{ TEAM_HEALTH : measures
 ```
+
+> 说明：`EXPERIENCE`、`AVAILABILITY`、`MATCH_RESULT`、`TEAM_HEALTH` 目前只存在于设计稿。
+> 推荐结果在请求时按最新成员关系即时计算并持久化 `RecommendationProfile` /
+> `RecommendationRequirement`，不落 `MATCH_RESULT` 历史快照。
 
 ## 非功能约束
 

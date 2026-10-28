@@ -49,7 +49,7 @@
 
 业务冲突使用 409，例如 `duplicate_application`、`duplicate_invitation` 和 `already_member`。
 
-## 推荐模块本地已实现契约（#13–#18、#27，待 PR 验收）
+## 推荐模块契约（#13–#18、#27，已合并 main，验收记录见 PR #31–#33）
 
 所有路径仍加 `/api/v1`，不带尾斜杠，使用 `Authorization: Token <token>`。
 
@@ -74,7 +74,7 @@ skills 为字符串数组；experience 当前按完整字符串作为一个类�
 
 ### 团队推荐需求
 
-`PATCH /teams/{id}/recommendation-requirements`：仅本团队队长、管理员角色或 is_staff 可配置。
+`PATCH /teams/{id}/recommendation-requirements`：仅本团队队长或 `User.Role.ADMIN` 可配置（`is_staff` 判断已在 #32 评审中移除，见 `core/recommendation_api.py`）。
 字段包括 abilities、skills、availability、goal、experience 和可选 weights；不接受 bio/display_name。
 首次未配置需求时，团队分析接口返回 400，请队长先配置；不虚构默认需求。
 
@@ -109,7 +109,7 @@ skills 为字符串数组；experience 当前按完整字符串作为一个类�
 }
 ```
 
-上述三个 GET 接口只允许本团队成员、队长、管理员/is_staff，匿名 401，越权 403，不存在的团队 404。
+上述三个 GET 接口只允许本团队成员、队长或 `User.Role.ADMIN`，匿名 401，越权 403，不存在的团队 404。
 候选池为已启用的 student 角色，排除本团队成员；其他团队的学生当前允许推荐。
 invited 表示已有待处理邀请；邀请待处理不增加成员，接受邀请/申请后重新读取矩阵会立即重算。
 applied 为兼容原页面的占位字段，不应用来表示本团队成员能再次申请本团队。
@@ -121,3 +121,27 @@ applied 为兼容原页面的占位字段，不应用来表示本团队成员能
 校验错误返回 400、code=validation_error；权限错误 permission_denied，认证错误 not_authenticated。
 错误格式由 core.exceptions 统一生成。推荐结果请求时计算，不保存历史画像快照；响应配置标识不能替代完整历史重放。
 健康度、风险看板及管理员统计不是本模块已交付功能，仍由相应负责人完成。
+
+### 错误响应示例（401 / 403 / 409）
+
+未携带或携带失效令牌访问受保护接口 —— HTTP 401：
+
+```json
+{"code":"not_authenticated","message":"身份认证信息未提供或已失效","details":{}}
+```
+
+非本团队成员访问团队能力矩阵 —— HTTP 403：
+
+```json
+{"code":"permission_denied","message":"您不是该团队的成员，无法查看能力矩阵","details":{}}
+```
+
+重复提交同一项目的申请 —— HTTP 409：
+
+```json
+{"code":"duplicate_application","message":"已有待处理申请","details":{}}
+```
+
+> 口径说明：错误凭据登录返回 400（`validation_error`），而非 401；401 仅用于
+> 已登录会话的令牌缺失或失效。这与 `core/exceptions.py` 及前端 `client.js`
+> 的处理一致（前端仅对 401 清除会话）。
