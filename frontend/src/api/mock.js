@@ -4,7 +4,8 @@ const accounts = new Map(
   ["student", "captain", "admin"].map((name, i) => [
     name,
     {
-      password: "Campus123!",
+      // Public, non-secret demo credential documented in the UI and README.
+      password: "Campus123!", // NOSONAR
       user: {
         id: i + 1,
         username: name,
@@ -139,7 +140,7 @@ export async function mockTransport(url, options = {}) {
     }, 100);
     options.signal?.addEventListener("abort", abort, { once: true });
   });
-  const parsed = new URL(url, "http://demo.local"),
+  const parsed = new URL(url, "https://demo.local"),
     path = parsed.pathname.replace(/^.*\/api\/v1/, "").replace(/\/$/, ""),
     method = options.method || "GET";
   const state = read(),

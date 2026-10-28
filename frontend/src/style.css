@@ -159,6 +159,11 @@ label {
   font-size: 14px;
   margin-bottom: 18px;
 }
+.ability-row {
+  color: #465f55;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
 input,
 select,
 textarea {
