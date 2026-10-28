@@ -48,7 +48,7 @@ erDiagram
     USER ||--o{ APPLICATION : submits
     TEAM ||--o{ INVITATION : sends
     USER ||--o{ INVITATION : receives
-    USER ||--|| RECOMMENDATION_PROFILE : measures
+    USER ||--o| RECOMMENDATION_PROFILE : measures
     TEAM ||--o| RECOMMENDATION_REQUIREMENT : configures
     USER ||--o{ AUDIT_LOG : records
 ```
