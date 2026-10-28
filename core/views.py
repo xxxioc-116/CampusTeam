@@ -5,7 +5,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Application, AuditLog, Invitation, Project, Team, TeamMember
+from .models import Application, AuditLog, Invitation, Project, Team, TeamMember, User
 from .permissions import IsAdminRole, IsProjectOwnerOrReadOnly
 from .serializers import (
     ApplicationSerializer,
@@ -122,7 +122,7 @@ class TeamInvitationView(generics.GenericAPIView):
 
     def post(self, request, pk):
         team = generics.get_object_or_404(Team.objects.select_related("project", "leader"), pk=pk)
-        if team.leader_id != request.user.id and not request.user.is_staff:
+        if team.leader_id != request.user.id and request.user.role != User.Role.ADMIN:
             from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied("仅队长可以邀请成员")
         serializer = self.get_serializer(data=request.data)
