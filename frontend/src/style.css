@@ -153,9 +153,13 @@ p {
   font-size: 13px;
   border-radius: 8px;
 }
-label,
-.ability-field {
+label {
   display: block;
+  color: #465f55;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+.ability-row {
   color: #465f55;
   font-size: 14px;
   margin-bottom: 18px;

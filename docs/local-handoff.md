@@ -1,60 +1,39 @@
-# w44504143-png 任务交付
+# w44504143-png 联调交付
 
-更新日期：2026-10-28。任务 #13–#18，协作任务 #26、#27。
+更新日期：2026-10-28。
 
-| 交付分支 | 内容 | PR 基线 |
-|---|---|---|
-| feature/13-recommendation-delivery | #13–#17：向量、缺口、五项权重、解释、实验 | main |
-| feature/18-recommendation-delivery | #18：持久化、Token API、权限、性能；PR #32 已合并 | main |
-| feature/27-integration-delivery | #27 联调、#26 CI；已同步最新 main，前端 #30 待合并 | main |
+#29（基础后端）、#30（前端）、#31（算法）、#32（推荐 API）均已合并。
+#33 基于最新 main，只交付 #27 真实联调与 #26 CI；前端重复修复采用 #30 已审版本，保留 ECharts 6 升级。
+原始前端和修复归属 yuuuu1693，基础后端归属 #29 作者；本次不代合或认领队友成果。
+历史依赖组合分支不再参与合并。
 
-依赖组合分支只保留已有后端、算法和前端的历史及内容，用于缩小 PR 差异；不单独合并。
-#29、#31、#32 已合并。#33 已同步最新 main 并将 base 改为 main。前端 #30 尚未合并，因此当前差异暂时包含前端依赖；#30 合并后再次同步 main，确认差异缩小并完成最终 CI/Review。依赖组合分支仅保留历史，不单独合并。
-基础后端属于 #29 作者，原始前端属于 #30 作者，本次不把队友代码计作个人原创。
-#18 已由 PR #32 合并自动关闭；#27 等待 #33 验收，#26 的管理员门禁配置仍待完成。未代替非作者审批。
+## 安装与复现
 
-## 复现检查
+先创建 .venv，再执行以下步骤：
 
-```powershell
-$env:DJANGO_DEBUG='true'
-.\.venv\Scripts\python -m ruff check analytics tests core campusteam manage.py
-.\.venv\Scripts\python manage.py check
-.\.venv\Scripts\python manage.py makemigrations --check --dry-run
-.\.venv\Scripts\python -m coverage run --source=analytics,core --omit='*/tests/*,*/migrations/*,*/management/*,analytics/experiment.py' manage.py test core tests
-.\.venv\Scripts\python -m coverage report --fail-under=80
-.\.venv\Scripts\python -m build --no-isolation
-.\.venv\Scripts\python -m analytics.experiment
-Set-Location frontend
-npm ci --ignore-scripts
-npm run lint
-npm run format:check
-npm test -- --coverage
-npm run build
-node node_modules/@playwright/test/cli.js install chromium
-Set-Location ..
-.\scripts\test-real.ps1
-```
+1. Python 安装：python -m pip install --only-binary=:all: --require-hashes -r requirements-ci.txt。
+2. 设置 DJANGO_DEBUG=true；执行 Django check、makemigrations --check --dry-run。
+3. Ruff 检查 analytics、tests、core、campusteam、manage.py。
+4. coverage run --source=analytics,core --omit='*/tests/*,*/migrations/*,*/management/*,analytics/experiment.py' manage.py test core tests；coverage report --fail-under=80。
+5. python -m build --no-isolation。
+6. frontend 目录执行 npm ci --ignore-scripts、npm run lint、npm run format:check、npm test -- --coverage、npm run build。
+7. frontend 目录执行 node node_modules/@playwright/test/cli.js install chromium。
+8. 仓库根目录执行 scripts/test-real.ps1。
 
-先执行 python -m pip install --only-binary=:all: --require-hashes -r requirements-ci.txt，再在 frontend 执行 npm ci --ignore-scripts。
 真实测试创建独立 SQLite 和随机口令，使用端口 8001/5174，不使用 Mock。
-测试通过浏览器发邀请，以候选人真实 Token 调用接受接口，再确认页面重算；没有宣称已实现邀请收件箱。
-结果和性能边界见 recommendation-validation.md。
+脚本直接运行锁文件安装的 Playwright CLI，finally 恢复调用位置/环境变量并清理本次临时数据库及 sidecar。
+浏览器发出邀请后，通过候选人真实 Token 接受，再确认页面重算；没有宣称已实现邀请收件箱。
+申请审批重算另有 API 测试；验证边界见 recommendation-validation.md。
 
-## 手动体验与讲解
+## 手动体验
 
 可运行 scripts/start-demo.ps1，结束运行 scripts/stop-demo.ps1。
-或设置 DJANGO_DEBUG=true、独立 DB_NAME、至少 12 字符的 CAMPUS_DEMO_PASSWORD，
-迁移并运行 seed_recommendation_demo，再启动 Django 与 VITE_USE_MOCK=false 的前端。
-不得将口令或 Token 提交到代码、文档或聊天。
+或设置 DJANGO_DEBUG=true、独立 DB_NAME 和至少 12 字符的 CAMPUS_DEMO_PASSWORD，迁移并运行 seed_recommendation_demo，
+再启动 Django 与 VITE_USE_MOCK=false 的前端。不要把口令或 Token 提交到仓库。
 
-需要理解：能力归一化、逐维最大值、实际缺口增量、五项权重和为 1、稳定排序、
-分项贡献与解释一致、审批后读取最新成员关系，以及合成实验不能代表真实满意度。
-经历目前为类别精确匹配，未做自由文本语义推断；技能等级也未被擅自映射成能力维度。
+## 待验收
 
-## GitHub 权限与待验收事项
-
-GitHub 插件可以读取仓库，但创建分支返回 403 Resource not accessible by integration。
-本次使用现有 Git 凭据核验账号 w44504143-png，再通过 Git/CLI 交付；不输出或保存凭据。
-远端结果以实际 PR、Actions 为准，不用本地测试替代远端运行。
-#26 的 main 强制门禁仍需管理员按 ci-gate.md 配置；配置前保持该验收项未完成。
-非作者批准及依赖合并仍需团队完成；AI 辅助实现和测试已如实披露，不能代用户声明已理解。
+#18 已关闭；#27 等待 #33 的非作者最终批准和合并。
+#26 的工作流由本 PR 提供，main 强制门禁仍需管理员按 ci-gate.md 启用并验证。
+当前账号无管理员权限，不能把已配置工作流等同于已启用门禁。
+AI 辅助实现和测试已披露，作者仍需自行理解；未代非作者批准或合并。

@@ -2,22 +2,17 @@
 
 ## Unreleased — Recommendation
 
-- Generate per-page demo credentials, use a synthetic HTTPS parsing base, associate capability slider labels accessibly, and disable inherited frontend install scripts for main-base analysis.
-
-- Persist recommendation profiles and validated team weights; expose authenticated recommendation APIs and real-Token performance tests (#18).
-- Add stable weight identifiers, contribution explanations and fixed-seed reproducibility tests.
+- Verify real profile persistence and invitation acceptance recompute team capabilities (#27).
+- Add backend/frontend/integration quality gates with coverage and locked dependency installs (#26).
+- Run the locked local Playwright CLI and clean only the generated temporary test database on exit.
 
 - Remove Django staff bypasses from recommendation team reads and requirement writes; enforce business ADMIN, leadership and membership rules with four regression tests (#18).
 
 - Lock CI dependencies with wheel SHA-256 verification, disable npm install scripts, and run installed Playwright directly (SonarCloud supply-chain findings).
 
-- Persist validated team scoring weights with stable configuration identifiers and contribution-consistent explanations (#15, #16, #18).
-- Test fixed-seed experiment reproducibility and real-Token API ranking at 100/500/1000 candidates (#17, #18).
-- Extend quality-gate lint to all backend Python modules; remove unused imports and an unused test assignment (#26).
+- Persist recommendation profiles and validated team weights; expose authenticated recommendation APIs and real-Token performance tests (#18).
 
-- Persist recommendation profiles and team requirements; expose authenticated matrix, gap and recommendation APIs (#18).
-- Verify application/invitation approval recomputes capabilities; adapt frontend full-profile persistence (#27).
-- Add real browser integration, bounded-query performance checks and aggregate CI gate (#26).
+- Add stable weight identifiers, contribution explanations and fixed-seed reproducibility tests.
 
 - Add validated five-dimensional normalization, maximum team aggregation and actual-gap complement scoring (#13, #14).
 - Add configurable five-factor stable Top-K and score-consistent explanations (#15, #16).
@@ -29,15 +24,11 @@
 
 ### Added
 
-- Vue 3 frontend, UI tests and frontend CI from PR #30 (yuuuu1693); retained as dependency attribution.
+- Add the Vue 3 frontend for issues #7-#12, including authentication, profile editing, project discovery, team capability visualization, and explainable recommendations.
+- Add frontend unit and end-to-end tests, API alignment documentation, and a dedicated lint/format/test/build CI workflow.
+- Document that profile, team matrix, gap analysis, and recommendation flows still require real-backend integration before issues #9, #11, and #12 can close.
 
 - 建立项目治理、评分对照、Issue/PR 模板、CI 治理检查和文档骨架。
-- 建立 Django 5.1 与 Django REST Framework 后端骨架、环境变量配置和健康检查。
-- 增加注册、登录、个人资料、学生/队长/管理员角色权限。
-- 增加项目、技能、团队、申请、邀请和审计日志数据模型及初始迁移。
-- 增加项目关键词检索、类型/状态筛选、安全分页和对象级权限。
-- 增加申请与邀请的同意、拒绝、撤回及防重复业务闭环。
-- 增加可重复执行的演示数据命令和后端自动化测试，当前覆盖率 94%。
 
 ## 0.1.0 - Planned
 

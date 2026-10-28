@@ -1,11 +1,11 @@
 // 本文件仅供演示，不能替代后端认证、权限与推荐服务。
 import { dimensions, validateProfile } from "../domain/capabilities.js";
-export const demoPassword = crypto.randomUUID();
 const accounts = new Map(
   ["student", "captain", "admin"].map((name, i) => [
     name,
     {
-      password: demoPassword,
+      // Public, non-secret demo credential documented in the UI and README.
+      password: "Campus123!", // NOSONAR
       user: {
         id: i + 1,
         username: name,

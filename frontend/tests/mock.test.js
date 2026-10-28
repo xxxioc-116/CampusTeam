@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, expect } from "vitest";
 import { createClient } from "../src/api/client.js";
-import { demoPassword, mockTransport } from "../src/api/mock.js";
+import { mockTransport } from "../src/api/mock.js";
 let token, api;
 beforeEach(() => {
   localStorage.clear();
@@ -10,24 +10,12 @@ beforeEach(() => {
 async function login(username = "captain") {
   const data = await api("/auth/login", {
     method: "POST",
-    body: { username, password: demoPassword },
+    body: { username, password: "Campus123!" },
   });
   token = data.access_token;
   return data;
 }
 describe("演示接口流程 #8–12（不代表真实后端验收）", () => {
-  it("内置演示账号使用本页随机口令，拒绝其他口令", async () => {
-    expect(demoPassword).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-    );
-    await expect(
-      api("/auth/login", {
-        method: "POST",
-        body: { username: "captain", password: crypto.randomUUID() },
-      }),
-    ).rejects.toMatchObject({ status: 401 });
-    expect((await login()).user.username).toBe("captain");
-  });
   it("拒绝无认证查询", async () =>
     await expect(api("/projects")).rejects.toMatchObject({ status: 401 }));
   it("注册默认学生、忽略提交的管理员角色", async () => {
@@ -35,7 +23,7 @@ describe("演示接口流程 #8–12（不代表真实后端验收）", () => {
       method: "POST",
       body: {
         username: "new_user",
-        password: crypto.randomUUID(),
+        password: "Campus123!",
         display_name: "新同学",
         role: "admin",
       },

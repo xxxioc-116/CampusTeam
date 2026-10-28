@@ -129,9 +129,9 @@ onMounted(load);
       </section>
       <section class="panel">
         <h2>五维能力</h2>
-        <div v-for="(name, i) in dimensions" :key="name" class="ability-field">
-          <span>{{ name }}</span>
-          <el-slider
+        <div v-for="(name, i) in dimensions" :key="name" class="ability-row">
+          <span>{{ name }}</span
+          ><el-slider
             v-model="form.abilities[i]"
             :min="0"
             :max="100"
