@@ -2,6 +2,9 @@
 
 ## Unreleased — Recommendation
 
+- Persist recommendation profiles and validated team weights; expose authenticated recommendation APIs and real-Token performance tests (#18).
+- Add stable weight identifiers, contribution explanations and fixed-seed reproducibility tests.
+
 - Remove Django staff bypasses from recommendation team reads and requirement writes; enforce business ADMIN, leadership and membership rules with four regression tests (#18).
 
 - Lock CI dependencies with wheel SHA-256 verification, disable npm install scripts, and run installed Playwright directly (SonarCloud supply-chain findings).
