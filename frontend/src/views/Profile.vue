@@ -129,15 +129,16 @@ onMounted(load);
       </section>
       <section class="panel">
         <h2>五维能力</h2>
-        <label v-for="(name, i) in dimensions" :key="name"
-          >{{ name
-          }}<el-slider
+        <div v-for="(name, i) in dimensions" :key="name" class="ability-field">
+          <span>{{ name }}</span>
+          <el-slider
             v-model="form.abilities[i]"
             :min="0"
             :max="100"
             show-input
             :aria-label="name"
-        /></label>
+          />
+        </div>
         <h2>每周空闲时间</h2>
         <p v-if="!form.availability.length" class="muted">
           尚未添加时间段。跨日时间请拆分。

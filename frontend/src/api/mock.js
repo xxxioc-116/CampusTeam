@@ -1,10 +1,11 @@
 // 本文件仅供演示，不能替代后端认证、权限与推荐服务。
 import { dimensions, validateProfile } from "../domain/capabilities.js";
+export const demoPassword = crypto.randomUUID();
 const accounts = new Map(
   ["student", "captain", "admin"].map((name, i) => [
     name,
     {
-      password: "Campus123!",
+      password: demoPassword,
       user: {
         id: i + 1,
         username: name,
@@ -139,7 +140,7 @@ export async function mockTransport(url, options = {}) {
     }, 100);
     options.signal?.addEventListener("abort", abort, { once: true });
   });
-  const parsed = new URL(url, "http://demo.local"),
+  const parsed = new URL(url, "https://demo.local"),
     path = parsed.pathname.replace(/^.*\/api\/v1/, "").replace(/\/$/, ""),
     method = options.method || "GET";
   const state = read(),

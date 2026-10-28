@@ -3,6 +3,7 @@ import { computed, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { api, isDemo } from "../api/index.js";
 import { setSession, safeRedirect } from "../auth.js";
+import { demoPassword } from "../api/mock.js";
 const route = useRoute(),
   router = useRouter();
 const registering = computed(() => route.path === "/register");
@@ -113,7 +114,10 @@ async function submit() {
         >
       </p>
       <p v-if="isDemo" class="hint">
-        演示账号：student / captain / admin<br />统一密码：Campus123!<br />演示注册请使用虚构信息。
+        演示账号：student / captain / admin<br />本页演示口令：<code
+          data-testid="demo-password"
+          >{{ demoPassword }}</code
+        ><br />刷新页面会生成新口令；演示注册请使用虚构信息。
       </p>
       <p v-else class="hint">
         真实后端角色为 student / leader /

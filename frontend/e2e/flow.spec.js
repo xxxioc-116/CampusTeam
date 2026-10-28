@@ -2,7 +2,8 @@ import { test, expect } from "@playwright/test";
 async function login(page, name = "captain") {
   await page.goto("/login");
   await page.getByLabel("用户名").fill(name);
-  await page.getByLabel("密码", { exact: true }).fill("Campus123!");
+  const password = await page.getByTestId("demo-password").textContent();
+  await page.getByLabel("密码", { exact: true }).fill(password);
   await page.getByRole("button", { name: "登录", exact: true }).click();
   await expect(page).toHaveURL(/projects/);
 }
@@ -13,7 +14,8 @@ test("未登录拦截、登录错误、退出", async ({ page }) => {
   await page.getByLabel("密码", { exact: true }).fill("wrong123");
   await page.getByRole("button", { name: "登录", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("用户名或密码错误");
-  await page.getByLabel("密码", { exact: true }).fill("Campus123!");
+  const password = await page.getByTestId("demo-password").textContent();
+  await page.getByLabel("密码", { exact: true }).fill(password);
   await page.getByRole("button", { name: "登录", exact: true }).click();
   await expect(page).toHaveURL(/profile/);
   await page.getByRole("button", { name: "退出" }).click();
@@ -32,6 +34,25 @@ test("画像保存与刷新回显", async ({ page }) => {
     "测试同学",
   );
   await expect(page.getByLabel("个人简介")).toHaveValue("希望加入数据分析项目");
+  await page.screenshot({
+    path: "../docs/images/profile-accessibility.png",
+    fullPage: true,
+  });
+});
+
+test("刷新后演示口令更新，旧口令不能登录", async ({ page }) => {
+  await page.goto("/login");
+  const previous = await page.getByTestId("demo-password").textContent();
+  await page.reload();
+  const current = await page.getByTestId("demo-password").textContent();
+  expect(current).not.toBe(previous);
+  await page.getByLabel("用户名").fill("captain");
+  await page.getByLabel("密码", { exact: true }).fill(previous);
+  await page.getByRole("button", { name: "登录", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("用户名或密码错误");
+  await page.getByLabel("密码", { exact: true }).fill(current);
+  await page.getByRole("button", { name: "登录", exact: true }).click();
+  await expect(page).toHaveURL(/projects/);
 });
 test("筛选、空态、分页与申请", async ({ page }) => {
   await login(page);

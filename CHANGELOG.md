@@ -2,6 +2,8 @@
 
 ## Unreleased — Recommendation
 
+- Generate per-page demo credentials, use a synthetic HTTPS parsing base, associate capability slider labels accessibly, and disable inherited frontend install scripts for main-base analysis.
+
 - Persist recommendation profiles and validated team weights; expose authenticated recommendation APIs and real-Token performance tests (#18).
 - Add stable weight identifiers, contribution explanations and fixed-seed reproducibility tests.
 
