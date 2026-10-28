@@ -2,6 +2,8 @@
 
 ## Unreleased — Recommendation
 
+- Lock CI dependencies with wheel SHA-256 verification, disable npm install scripts, and run installed Playwright directly (SonarCloud supply-chain findings).
+
 - Persist validated team scoring weights with stable configuration identifiers and contribution-consistent explanations (#15, #16, #18).
 - Test fixed-seed experiment reproducibility and real-Token API ranking at 100/500/1000 candidates (#17, #18).
 - Extend quality-gate lint to all backend Python modules; remove unused imports and an unused test assignment (#26).
