@@ -13,19 +13,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python -m pip install ruff==0.14.2 coverage==7.6.12 build==1.3.0
+      - run: 'python -m pip install --only-binary=:all: --require-hashes -r requirements-ci.txt'
       - run: python -m ruff check analytics tests
       - run: python -m coverage run -m unittest discover -s tests
       - run: python -m coverage report
-      - run: python -m build
+      - run: python -m build --no-isolation
       - run: python -m analytics.experiment > experiment.json
       - uses: actions/upload-artifact@v4
         with:
           name: recommendation-experiment
           path: experiment.json
-      - name: Install API dependencies when backend is present
-        if: hashFiles('manage.py') != ''
-        run: python -m pip install -r requirements.txt
       - name: Validate authenticated recommendation API and migrations
         if: hashFiles('manage.py') != ''
         env:
