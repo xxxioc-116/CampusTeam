@@ -2,6 +2,8 @@
 
 ## Unreleased — Recommendation
 
+- Add the defense-chain end-to-end scenario (register, search, profile, matrix, recommendation, invite/accept, recompute, health) and an API performance regression report with environment, scale and conclusions (#24).
+
 - Add GET /admin/analytics with popular projects, scarce skills and team formation metrics, including inline metric definitions and admin-only access (#23).
 - Add per-module coverage gate (core service/API ≥60%) and downloadable coverage artifacts (coverage.xml + htmlcov) in CI, with 13 transition-branch tests raised core/services.py to 100% (#22).
 - Add five-dimension team health scoring, common-time/goal alignment and four-type risk warnings via GET /teams/{id}/health, with fixed documented thresholds and no new database models (#19, #20, #21).
