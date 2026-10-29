@@ -21,6 +21,19 @@ jobs:
       - run: python manage.py makemigrations --check --dry-run
       - run: python -m coverage run --source=analytics,core --omit='*/tests/*,*/migrations/*,*/management/*,analytics/experiment.py' manage.py test core tests
       - run: python -m coverage report --fail-under=80
+      # Core service/API modules must stay above 60% (issue #22), independent of
+      # the global 80% gate so a drop in one hot module cannot hide in the total.
+      - run: python -m coverage report --include='core/services.py,core/views.py,core/serializers.py,core/recommendation_api.py,core/team_health_api.py,core/analytics_api.py' --fail-under=60
+      - run: python -m coverage xml
+      - run: python -m coverage html
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: |
+            coverage.xml
+            htmlcov/
+          retention-days: 14
       - run: python -m build --no-isolation
   frontend:
     runs-on: ubuntu-latest
