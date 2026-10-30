@@ -13,7 +13,8 @@
 ## 回归测量（#24）
 
 - 一键测量脚本：`python scripts/benchmark_api.py`（隔离临时 SQLite，自动删除；
-  `--out docs/performance-report.md` 可生成报告）
+  `--out <文件名>` 可生成报告，仅接受纯文件名，固定写入仓库 `artifacts/` 目录，
+  拒绝绝对路径与 `..` 逃逸）
 - 最近一次测量结果、运行环境与结论见 [性能回归报告](performance-report.md)
 - CI 在 `Quality → backend` job 每次运行后产出 `api-performance-report` artifact
 - 结构性回归由 `core/tests/test_api_scale_regression.py` 守护：同一接口在 50 与

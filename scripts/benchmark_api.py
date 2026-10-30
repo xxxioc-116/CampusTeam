@@ -3,7 +3,11 @@
 Usage (repository root):
 
     python scripts/benchmark_api.py                 # print markdown to stdout
-    python scripts/benchmark_api.py --out docs/performance-report.md
+    python scripts/benchmark_api.py --out performance-report.md
+
+``--out`` only accepts a plain file name; the report is always written into
+``<repo>/artifacts/``. Absolute paths, directory components and ``..`` are
+rejected so the benchmark can never write outside that directory.
 
 The script never touches the development database: it creates a throwaway
 SQLite file in the system temp directory, migrates, seeds synthetic data, tops
@@ -23,9 +27,23 @@ from pathlib import Path
 from time import perf_counter
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+OUTPUT_DIR = BASE_DIR / "artifacts"
 SIZES = (100, 500, 1000)
 ROUNDS = 5
 INNER_FLAG = "CAMPUS_BENCH_INNER"
+
+
+def resolve_output_path(name):
+    """Constrain report output to ``<repo>/artifacts/<name>``.
+
+    Only a plain file name is accepted: anything containing a directory
+    component (absolute paths, ``sub/dir/file.md``, ``..`` escapes) is
+    rejected, so the report can never be written outside ``artifacts/``
+    even when the script runs in CI with untrusted argument input.
+    """
+    if not name or Path(name).name != name or name in (".", ".."):
+        raise ValueError(f"--out accepts a plain file name written into artifacts/: got {name!r}")
+    return OUTPUT_DIR / name
 
 
 def run_outer(out_path):
@@ -40,7 +58,8 @@ def run_outer(out_path):
             sys.stderr.write(completed.stderr or "benchmark failed\n")
             return completed.returncode
         if out_path:
-            Path(out_path).write_text(completed.stdout, encoding="utf-8")
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(completed.stdout, encoding="utf-8")
             print(f"written: {out_path}")
         else:
             print(completed.stdout)
@@ -185,19 +204,25 @@ def run_inner():
         lines.append(f"- `{name}`：SQL 查询数恒为 {queries[0]}，三种规模下无 N+1；{trend}。")
     lines += ["", "## 复现方式", "", "```powershell",
               "python scripts/benchmark_api.py",
-              "python scripts/benchmark_api.py --out docs/performance-report.md",
-              "```", ""]
+              "python scripts/benchmark_api.py --out performance-report.md",
+              "```", "",
+              "``--out`` 只接受纯文件名，报告固定写入仓库的 ``artifacts/`` 目录。", ""]
     print("\n".join(lines))
     return 0
 
 
 def main():
     parser = argparse.ArgumentParser(description="CampusTeam API benchmark")
-    parser.add_argument("--out", help="write the markdown report to this path")
+    parser.add_argument("--out",
+                        help="write the markdown report to artifacts/<name>; a plain file name only")
     args = parser.parse_args()
     if os.environ.get(INNER_FLAG) == "1":
         return run_inner()
-    return run_outer(args.out)
+    try:
+        out_path = resolve_output_path(args.out) if args.out else None
+    except ValueError as exc:
+        parser.error(str(exc))
+    return run_outer(out_path)
 
 
 if __name__ == "__main__":

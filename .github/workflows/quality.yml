@@ -41,7 +41,7 @@ jobs:
         if: always()
         with:
           name: api-performance-report
-          path: performance-report.md
+          path: artifacts/performance-report.md
           retention-days: 14
   frontend:
     runs-on: ubuntu-latest

@@ -40,6 +40,8 @@
 
 ```powershell
 python scripts/benchmark_api.py
-python scripts/benchmark_api.py --out docs/performance-report.md
+python scripts/benchmark_api.py --out performance-report.md
 ```
+
+`--out` 只接受纯文件名，报告固定写入仓库的 `artifacts/` 目录（拒绝绝对路径与 `..`）。
 
