@@ -6,6 +6,7 @@ from .recommendation_api import (
     TeamRecommendationsView, TeamRequirementView,
 )
 
+from .analytics_api import AdminAnalyticsView
 from .team_health_api import TeamHealthView
 from .views import (
     ApplicationTransitionView,
@@ -35,6 +36,7 @@ urlpatterns = [
     path("teams/<int:pk>/invitations", TeamInvitationView.as_view()),
     path("invitations/<int:pk>/transition", InvitationTransitionView.as_view()),
     path("admin/audit-logs", AuditLogView.as_view()),
+    path("admin/analytics", AdminAnalyticsView.as_view()),
     path("", include(router.urls)),
 ]
 

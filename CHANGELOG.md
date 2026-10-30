@@ -2,6 +2,8 @@
 
 ## Unreleased — Recommendation
 
+- Add GET /admin/analytics with popular projects, scarce skills and team formation metrics, including inline metric definitions and admin-only access (#23).
+- Add per-module coverage gate (core service/API ≥60%) and downloadable coverage artifacts (coverage.xml + htmlcov) in CI, with 13 transition-branch tests raised core/services.py to 100% (#22).
 - Add five-dimension team health scoring, common-time/goal alignment and four-type risk warnings via GET /teams/{id}/health, with fixed documented thresholds and no new database models (#19, #20, #21).
 - Verify real profile persistence and invitation acceptance recompute team capabilities (#27).
 - Add backend/frontend/integration quality gates with coverage and locked dependency installs (#26).

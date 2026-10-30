@@ -125,8 +125,16 @@ at_risk 分档与四类风险（critical_gap、capability_duplication、
 common_time_insufficient、goal_inconsistency）。时间重合度取全员交集；
 指标公式、固定阈值与算例见 docs/team-health.md，设计决策见 ADR 0003。
 
-### 错误与限制
+### 管理员统计（#23）
 
+`GET /admin/analytics?top_n=5`：仅 `User.Role.ADMIN` 可读（`is_staff` 不参与判定），
+匿名 401、其他角色 403；`top_n` 为 1–50 的整数，越界或非数字 400。
+返回 `overview`（学生数、项目数、团队数、招募中项目数、申请/邀请接受率）、
+`popular_projects`（按申请总数降序）、`scarce_skills`（gap = 需求项目数 − 活跃学生持有数）、
+`team_formation`（成员 ≥2 的项目占比）与内嵌 `definitions` 口径说明。
+指标定义与复核方式见 docs/admin-analytics.md。
+
+### 错误与限制
 校验错误返回 400、code=validation_error；权限错误 permission_denied，认证错误 not_authenticated。
 错误格式由 core.exceptions 统一生成。推荐结果请求时计算，不保存历史画像快照；响应配置标识不能替代完整历史重放。
 健康度与四类风险预警已随 #19–#21 交付（见上节）；风险看板页与管理员统计仍由 #23 等任务完成。
