@@ -37,11 +37,15 @@ def resolve_output_path(name):
     """Constrain report output to ``<repo>/artifacts/<name>``.
 
     Only a plain file name is accepted: anything containing a directory
-    component (absolute paths, ``sub/dir/file.md``, ``..`` escapes) is
-    rejected, so the report can never be written outside ``artifacts/``
-    even when the script runs in CI with untrusted argument input.
+    component (absolute paths, ``sub/dir/file.md``, ``..`` escapes, either
+    separator) is rejected, so the report can never be written outside
+    ``artifacts/`` even when the script runs in CI with untrusted input.
+    The separators are checked as raw characters, not through ``Path``:
+    on POSIX ``Path`` treats ``\\`` as a regular character and would let
+    ``..\\report.md`` slip through.
     """
-    if not name or Path(name).name != name or name in (".", ".."):
+    if (not name or name in (".", "..") or ":" in name
+            or "/" in name or "\\" in name):
         raise ValueError(f"--out accepts a plain file name written into artifacts/: got {name!r}")
     return OUTPUT_DIR / name
 

@@ -29,7 +29,15 @@ class OutputPathTests(unittest.TestCase):
                 benchmark_api.resolve_output_path(raw)
 
     def test_dotdot_escape_is_rejected(self):
-        for raw in ("../report.md", "..\\report.md", "artifacts/../../report.md"):
+        for raw in ("../report.md", "..\\report.md", "artifacts/../../report.md",
+                    "..%2Freport.md".replace("%2F", "/")):
+            with self.assertRaises(ValueError, msg=raw):
+                benchmark_api.resolve_output_path(raw)
+
+    def test_backslash_and_colon_are_rejected_on_any_platform(self):
+        # On POSIX Path() sees a backslash as a regular character, so the
+        # validator must reject it as a raw character, not via Path semantics.
+        for raw in ("..\\report.md", "sub\\report.md", "C:report.md", "report:md"):
             with self.assertRaises(ValueError, msg=raw):
                 benchmark_api.resolve_output_path(raw)
 
