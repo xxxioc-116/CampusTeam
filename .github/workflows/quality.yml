@@ -35,6 +35,14 @@ jobs:
             htmlcov/
           retention-days: 14
       - run: python -m build --no-isolation
+      # Performance regression report (#24): isolated temp database, markdown output.
+      - run: python scripts/benchmark_api.py --out performance-report.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-performance-report
+          path: artifacts/performance-report.md
+          retention-days: 14
   frontend:
     runs-on: ubuntu-latest
     defaults:

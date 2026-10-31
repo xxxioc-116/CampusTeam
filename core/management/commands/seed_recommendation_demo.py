@@ -18,6 +18,7 @@ class Command(BaseCommand):
         for username, role, abilities in (
             ("rec_leader", "leader", [80, 20, 40, 70, 60]),
             ("rec_candidate", "student", [70, 95, 80, 70, 60]),
+            ("rec_admin", "admin", [60, 60, 60, 60, 60]),
         ):
             user, _ = User.objects.get_or_create(username=username, defaults={"role": role, "display_name": username})
             user.set_password(password)
@@ -28,4 +29,4 @@ class Command(BaseCommand):
         team, _ = Team.objects.get_or_create(project=project, defaults={"leader": users[0]})
         TeamMember.objects.get_or_create(team=team, user=users[0])
         RecommendationRequirement.objects.update_or_create(team=team, defaults={"abilities": [80, 80, 70, 70, 60], "skills": ["Python"]})
-        self.stdout.write(f"team_id={team.id}; users=rec_leader,rec_candidate; no real student data used")
+        self.stdout.write(f"team_id={team.id}; users=rec_leader,rec_candidate,rec_admin; no real student data used")
