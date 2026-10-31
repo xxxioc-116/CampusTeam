@@ -1,9 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("真实画像、推荐、邀请接受与团队能力重算 #27", async ({
-  page,
-  request,
-}) => {
+test("真实画像、推荐、邀请接受与团队能力重算 #27", async ({ page }) => {
   const password = process.env.CAMPUS_DEMO_PASSWORD;
   expect(password).toBeTruthy();
   await page.goto("/login");
@@ -34,25 +31,22 @@ test("真实画像、推荐、邀请接受与团队能力重算 #27", async ({
     .getByRole("button", { name: "邀请加入团队", exact: true })
     .first()
     .click();
-  const invitation = await (await invitationResponse).json();
+  await invitationResponse;
   await expect(
     page.getByRole("button", { name: "已邀请", exact: true }).first(),
   ).toBeDisabled();
-  const login = await request.post("http://127.0.0.1:8001/api/v1/auth/login", {
-    data: { username: "rec_candidate", password },
-  });
-  expect(login.ok()).toBeTruthy();
-  const candidate = await login.json();
-  // The current UI has no invitation inbox; accept through the real API using the candidate's token.
-  const accepted = await request.post(
-    `http://127.0.0.1:8001/api/v1/invitations/${invitation.id}/transition`,
-    {
-      headers: { Authorization: `Token ${candidate.token}` },
-      data: { action: "accept" },
-    },
-  );
-  expect(accepted.ok()).toBeTruthy();
-  await page.goto(`/teams/${teamId}`);
+  await page.getByRole("button", { name: "退出" }).click();
+  await page.getByLabel("用户名").fill("rec_candidate");
+  await page.getByLabel("密码", { exact: true }).fill(password);
+  await page.getByRole("button", { name: "登录", exact: true }).click();
+  await page.getByRole("link", { name: "收到的邀请" }).click();
+  await expect(page.getByText("推荐联调演示", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "接受并加入" }).click();
+  await expect(page.getByText("该邀请已处理，不能重复操作。")).toBeVisible();
+  await page.getByRole("link", { name: "我的团队" }).click();
+  await expect(page).toHaveURL(new RegExp(`teams/${teamId}$`));
   await expect(page.getByText("目前没有能力缺口")).toBeVisible();
-  await expect(page.getByText("rec_candidate", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("cell", { name: "rec_candidate", exact: true }),
+  ).toBeVisible();
 });

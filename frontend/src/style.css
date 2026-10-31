@@ -376,6 +376,24 @@ th {
   padding: 10px 14px;
   font-size: 13px;
 }
+.invitation-list {
+  display: grid;
+  gap: 16px;
+}
+.invitation-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.invitation-card h2 {
+  margin: 4px 0 12px;
+}
+.invitation-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
 @media (max-width: 950px) {
   header {
     gap: 20px;
@@ -452,6 +470,13 @@ th {
   }
   .candidate-head {
     gap: 12px;
+  }
+  .invitation-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .invitation-actions {
+    justify-content: flex-end;
   }
   .avatar {
     width: 45px;

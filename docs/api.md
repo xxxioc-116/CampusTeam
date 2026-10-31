@@ -11,6 +11,8 @@
 | GET/PATCH | `/projects/{id}` | 查看或修改项目 | 成员 / 负责人 |
 | POST | `/projects/{id}/applications` | 申请加入 | 已登录 |
 | POST | `/teams/{id}/invitations` | 邀请候选人 | 队长 |
+| GET | `/invitations` | 查看本人收到的邀请 | 已登录 |
+| POST | `/invitations/{id}/transition` | 接受/拒绝/撤回邀请 | 邀请相关用户 |
 | GET | `/teams/{id}/capability-matrix` | 团队能力矩阵 | 团队成员 |
 | GET | `/teams/{id}/gaps` | 能力缺口 | 团队成员 |
 | GET | `/teams/{id}/recommendations` | Top-K 推荐与解释 | 团队成员 |
@@ -36,8 +38,10 @@
 - `POST /projects/{id}/applications` 创建申请。
 - `POST /applications/{id}/transition`，请求体 `action=accept|reject|withdraw`。
 - `POST /teams/{id}/invitations`，请求体含 `invitee_id`。
+- `GET /invitations` 返回本人收到的邀请，包含团队名称、邀请人、留言、状态和时间，按创建时间倒序。
 - `POST /invitations/{id}/transition`，请求体 `action=accept|reject|withdraw`。
 - 同一项目/团队只允许一条待处理记录；已处理记录不能重复操作；接受时校验团队容量。
+- 已处理邀请再次操作返回 409 `invitation_already_processed`；非邀请相关用户返回 403。
 
 ### 统一错误
 

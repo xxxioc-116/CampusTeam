@@ -133,21 +133,21 @@ test("答辩链路 02：检索、画像、矩阵、推荐、邀请、接受与�
     .getByRole("button", { name: "邀请加入团队", exact: true })
     .first()
     .click();
-  const invitation = await (await invitationResponse).json();
+  await invitationResponse;
   const candidate = await apiLogin(request, "rec_candidate");
 
-  // 9. 候选人通过真实 API 接受邀请（当前 UI 无邀请收件箱）
-  const accepted = await request.post(
-    `${api}/invitations/${invitation.id}/transition`,
-    {
-      headers: { Authorization: `Token ${candidate.token}` },
-      data: { action: "accept" },
-    },
-  );
-  expect(accepted.ok()).toBeTruthy();
+  // 9. 候选人通过邀请收件箱 UI 接受邀请
+  await page.getByRole("button", { name: "退出" }).click();
+  await page.getByLabel("用户名").fill("rec_candidate");
+  await page.getByLabel("密码", { exact: true }).fill(password);
+  await page.getByRole("button", { name: "登录", exact: true }).click();
+  await page.getByRole("link", { name: "收到的邀请" }).click();
+  await page.getByRole("button", { name: "接受并加入" }).click();
+  await expect(page.getByText("该邀请已处理，不能重复操作。")).toBeVisible();
 
   // 10. 能力重算：候选人出现在成员列表，缺口收敛
-  await page.goto(`/teams/${teamId}`);
+  await page.getByRole("link", { name: "我的团队" }).click();
+  await expect(page).toHaveURL(new RegExp(`teams/${teamId}$`));
   await expect(
     page.getByText("rec_candidate", { exact: true }).first(),
   ).toBeVisible();
