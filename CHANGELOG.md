@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 - Unreleased
+
+### Added
+
+- Add an authenticated invitation inbox with accept/reject actions, processed-state protection, team refresh, empty/error states and frontend/backend regression coverage (#45).
+
 ## 1.0.0 - 2026-10-31
 
 ### Added
@@ -17,7 +23,7 @@
 
 ### Known limitations
 
-- Invitation inbox, health dashboard and admin analytics UI remain API-driven in the demonstration.
+- Health dashboard and admin analytics UI remain API-driven in the demonstration.
 - The course delivery targets a single-node environment; production availability and capacity work remain out of scope.
 
 ## 0.2.0 - 2026-10-30

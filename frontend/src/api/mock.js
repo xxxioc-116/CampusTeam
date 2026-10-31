@@ -18,7 +18,13 @@ const accounts = new Map(
 );
 const key = "ct-demo-v1";
 function initial() {
-  return { profiles: {}, applications: [], invitations: [], sessions: {} };
+  return {
+    profiles: {},
+    applications: [],
+    invitations: [],
+    receivedInvitations: [],
+    sessions: {},
+  };
 }
 function read() {
   try {
@@ -124,6 +130,37 @@ function defaultProfile(user) {
     availability: [],
   };
 }
+function inbox(state, user) {
+  if (!Array.isArray(state.receivedInvitations)) state.receivedInvitations = [];
+  if (!state.receivedInvitations.some((item) => item.invitee_id === user.id)) {
+    state.receivedInvitations.push(
+      {
+        id: `demo-${user.id}-1`,
+        team: 2,
+        team_name: "智能学习计划助手",
+        inviter: { id: 20, username: "leader_demo", display_name: "王队长" },
+        invitee_id: user.id,
+        message: "你的前端经验很适合我们，期待一起完成作品。",
+        status: "pending",
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: `demo-${user.id}-2`,
+        team: 3,
+        team_name: "非遗数字展览",
+        inviter: { id: 21, username: "captain_demo", display_name: "李队长" },
+        invitee_id: user.id,
+        message: "欢迎关注我们的项目。",
+        status: "accepted",
+        created_at: new Date(Date.now() - 86400000).toISOString(),
+      },
+    );
+    write(state);
+  }
+  return state.receivedInvitations.filter(
+    (item) => item.invitee_id === user.id,
+  );
+}
 export async function mockTransport(url, options = {}) {
   await new Promise((resolve, reject) => {
     if (options.signal?.aborted) {
@@ -191,6 +228,25 @@ export async function mockTransport(url, options = {}) {
       user,
       profile: state.profiles[user.id] || defaultProfile(user),
     });
+  }
+  if (path === "/invitations" && method === "GET")
+    return reply(inbox(state, user));
+  const invitationTransition = path.match(
+    /^\/invitations\/([^/]+)\/transition$/,
+  );
+  if (invitationTransition && method === "POST") {
+    const invitation = inbox(state, user).find(
+      (item) => String(item.id) === invitationTransition[1],
+    );
+    if (!invitation) return fail("邀请不存在或无权查看", 403);
+    if (invitation.status !== "pending")
+      return fail("邀请已处理，请勿重复操作", 409);
+    if (!["accept", "reject"].includes(body.action))
+      return fail("不支持的邀请操作");
+    invitation.status = body.action === "accept" ? "accepted" : "rejected";
+    if (body.action === "accept") user.team_id = invitation.team;
+    write(state);
+    return reply(invitation);
   }
   if (path === "/projects" && method === "GET") {
     const q = parsed.searchParams,

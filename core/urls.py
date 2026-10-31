@@ -15,6 +15,7 @@ from .views import (
     LoginView,
     ProjectViewSet,
     RegisterView,
+    ReceivedInvitationListView,
     TeamInvitationView,
     health,
 )
@@ -34,6 +35,7 @@ urlpatterns = [
     path("teams/<int:pk>/health", TeamHealthView.as_view()),
     path("applications/<int:pk>/transition", ApplicationTransitionView.as_view()),
     path("teams/<int:pk>/invitations", TeamInvitationView.as_view()),
+    path("invitations", ReceivedInvitationListView.as_view()),
     path("invitations/<int:pk>/transition", InvitationTransitionView.as_view()),
     path("admin/audit-logs", AuditLogView.as_view()),
     path("admin/analytics", AdminAnalyticsView.as_view()),

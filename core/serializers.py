@@ -72,11 +72,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
 class InvitationSerializer(serializers.ModelSerializer):
     inviter = UserSerializer(read_only=True)
     invitee = UserSerializer(read_only=True)
+    team_name = serializers.CharField(source="team.project.title", read_only=True)
     invitee_id = serializers.PrimaryKeyRelatedField(source="invitee", queryset=User.objects.all(), write_only=True)
 
     class Meta:
         model = Invitation
-        fields = ["id", "team", "inviter", "invitee", "invitee_id", "message", "status", "created_at", "updated_at"]
+        fields = ["id", "team", "team_name", "inviter", "invitee", "invitee_id", "message", "status", "created_at", "updated_at"]
         read_only_fields = ["id", "team", "inviter", "invitee", "status", "created_at", "updated_at"]
 
 
