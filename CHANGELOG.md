@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.0.0 - 2026-10-31
+
+### Added
+
+- Add team health, risk warnings and admin analytics APIs (#19-#23).
+- Add backend coverage artifacts and independent core module gates (#22).
+- Add real-browser defense-chain E2E, scale regression and reproducible performance reports (#24).
+- Add complete release notes, defense script, contribution links and automated release-evidence validation (#28).
+
+### Fixed
+
+- Restrict benchmark report output to plain file names under `artifacts/` and cover traversal attempts (#24).
+- Restore profile edits from the latest server snapshot when cancellation is requested (#9).
+- Align all administrator authorization checks with the business `User.Role.ADMIN` role (#18).
+
+### Known limitations
+
+- Invitation inbox, health dashboard and admin analytics UI remain API-driven in the demonstration.
+- The course delivery targets a single-node environment; production availability and capacity work remain out of scope.
+
+## 0.2.0 - 2026-10-30
+
+### Added
+
+- Add the Vue project, profile, team, gap and recommendation flows (#7-#12).
+- Add explainable weighted recommendations, experiments and authenticated APIs (#13-#18).
+- Add real Token integration and CI quality aggregation (#26-#27).
+
+## 0.1.0 - 2026-10-27
+
+### Added
+
+- Establish repository governance, architecture, API contracts and protected delivery workflow.
+- Add authentication, projects, teams, applications, invitations, auditing and repeatable demo data (#1-#6).
+
 ## Unreleased — Recommendation
 
 - Add the defense-chain end-to-end scenario (register, search, profile, matrix, recommendation, invite/accept, recompute, health) and an API performance regression report with environment, scale and conclusions (#24).

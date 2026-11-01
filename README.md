@@ -6,9 +6,9 @@ CampusTeam 面向学科竞赛、课程项目、科研训练和创新创业活动
 
 ## 当前状态
 
-推荐算法、真实推荐 API、画像持久化、Vue 前端和真实浏览器联调现已合并到 `main`。个人任务、运行方法与验证结果见 [本地交付说明](docs/local-handoff.md) 和 [验证报告](docs/recommendation-validation.md)；尚未完成的 P2 功能、总验收及发布工作继续按 Issues 和里程碑推进。
+P0、P1 主链路以及团队健康度、管理员统计、真实浏览器 E2E 和性能回归均已合并到 `main`。运行方法见 [本地交付说明](docs/local-handoff.md)，答辩步骤见 [演示脚本](docs/demo-script.md)，完整证据见 [答辩证据索引](docs/evidence-index.md)。
 
-项目已进入后端 Alpha 实现阶段。当前已提供 Django/DRF 可运行骨架、Token 认证、角色权限、项目检索、团队申请/邀请闭环、审计日志、演示数据和自动化测试。
+当前版本为 v1.0.0 课程交付候选版，提供 Django/DRF 后端、Vue 前端、Token 认证、角色权限、项目检索、团队申请/邀请、可解释推荐、健康度与风险预警、管理员统计、审计日志、演示数据和全链路自动化测试。
 
 ## 核心业务闭环
 
@@ -121,6 +121,14 @@ python -m coverage report -m
 ## 协作规则
 
 所有工作必须遵循 `Issue → Branch → Commit → PR → Review → CI → Merge → Closed`。禁止直接向 `main` 推送，禁止自评自合，禁止补录或刷量。详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 版本与证据
+
+- Release Notes：[v0.1.0](docs/releases/v0.1.0.md)、[v0.2.0](docs/releases/v0.2.0.md)、[v1.0.0](docs/releases/v1.0.0.md)
+- 答辩演示：[docs/demo-script.md](docs/demo-script.md)
+- 测试与性能：[docs/coverage.md](docs/coverage.md)、[docs/performance-report.md](docs/performance-report.md)
+- 贡献索引：[docs/contributions/README.md](docs/contributions/README.md)
+- 发布证据自检：`python scripts/verify_release_evidence.py`
 
 ## 许可证
 
