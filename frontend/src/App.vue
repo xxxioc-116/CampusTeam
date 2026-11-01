@@ -28,6 +28,7 @@ watch(
       <nav v-if="auth.token">
         <router-link to="/projects">项目大厅</router-link
         ><router-link to="/profile">能力画像</router-link
+        ><router-link to="/invitations">收到的邀请</router-link
         ><router-link
           v-if="auth.user?.team_id"
           :to="`/teams/${auth.user.team_id}`"
