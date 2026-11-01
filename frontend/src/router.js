@@ -6,6 +6,7 @@ const Profile = () => import("./views/Profile.vue");
 const Projects = () => import("./views/Projects.vue");
 const Team = () => import("./views/Team.vue");
 const Recommendations = () => import("./views/Recommendations.vue");
+const Invitations = () => import("./views/Invitations.vue");
 const Status = () => import("./views/Status.vue");
 export function makeRouter(history = createWebHistory()) {
   const router = createRouter({
@@ -16,6 +17,7 @@ export function makeRouter(history = createWebHistory()) {
       { path: "/register", component: Login, meta: { public: true } },
       { path: "/profile", component: Profile },
       { path: "/projects", component: Projects },
+      { path: "/invitations", component: Invitations },
       { path: "/teams/:id", component: Team },
       { path: "/teams/:id/recommendations", component: Recommendations },
       {
