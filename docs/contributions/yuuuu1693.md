@@ -17,12 +17,12 @@
 | [#12](https://github.com/xxxioc-116/CampusTeam/issues/12) | 实现推荐结果与解释页面 | 已关闭 | [#30](https://github.com/xxxioc-116/CampusTeam/pull/30) | 2026-10-28 |
 | [#25](https://github.com/xxxioc-116/CampusTeam/issues/25) | 需求、架构 ER 与 API 设计评审协作 | 已关闭 | [#34](https://github.com/xxxioc-116/CampusTeam/pull/34) | 2026-10-28 |
 | [#42](https://github.com/xxxioc-116/CampusTeam/issues/42) | 撰写个人工程贡献说明书 | 审核中 | [#47](https://github.com/xxxioc-116/CampusTeam/pull/47) | 2026-10-31 |
-| [#45](https://github.com/xxxioc-116/CampusTeam/issues/45) | 实现邀请收件箱 UI 与真实回归测试 | 审核中 | [#48](https://github.com/xxxioc-116/CampusTeam/pull/48) | 2026-10-31 |
+| [#45](https://github.com/xxxioc-116/CampusTeam/issues/45) | 实现邀请收件箱 UI 与真实回归测试 | 已关闭 | [#48](https://github.com/xxxioc-116/CampusTeam/pull/48) | 2026-11-02 |
 
 ## 二 代码贡献
 
 - 有效合并 Commit：PR #30 中 4 个前端提交、PR #36 中 1 个画像回归提交，以及 PR #34 中 2 个设计评审整改提交。
-- 合并 PR：本人独立提交并合并 [PR #30](https://github.com/xxxioc-116/CampusTeam/pull/30) 与 [PR #36](https://github.com/xxxioc-116/CampusTeam/pull/36)；并在 [PR #34](https://github.com/xxxioc-116/CampusTeam/pull/34) 协作完成第二部分评审和整改。v1.0.1 阶段另提交 [PR #47](https://github.com/xxxioc-116/CampusTeam/pull/47)（贡献说明书）与 [PR #48](https://github.com/xxxioc-116/CampusTeam/pull/48)（邀请收件箱），处于审核中。
+- 本人作者 PR：[PR #30](https://github.com/xxxioc-116/CampusTeam/pull/30)、[PR #36](https://github.com/xxxioc-116/CampusTeam/pull/36) 和 [PR #48](https://github.com/xxxioc-116/CampusTeam/pull/48) 已合并；本 PR #47 合并后达到 4 个。PR #48 的最终合并提交为 [`f1ec12a`](https://github.com/xxxioc-116/CampusTeam/commit/f1ec12a5cea0569607c30f2f5f17eb3e08f460c1)。[PR #34](https://github.com/xxxioc-116/CampusTeam/pull/34) 仅作为协作评审与整改证据，不计入本人作者 PR。
 - 主要模块：Vue 3/Element Plus 前端骨架、Token 登录与角色路由、学生画像、项目大厅、团队能力矩阵与缺口、推荐解释、API adapter、Mock/真实后端切换、邀请收件箱（收件列表/接受/拒绝/409 重复处理）和前端测试。
 - 代表提交链接：
   - [完成 #7–#12 前端流程](https://github.com/xxxioc-116/CampusTeam/commit/23edd4cd842c1114fc570f991bfda22bf38e7b8b)
@@ -66,7 +66,7 @@
 |---|---:|---:|---|
 | B1 任务认领与闭环 | 4 | 4 | [#7–#12 闭环](https://github.com/xxxioc-116/CampusTeam/pull/30)；[#9 独立修复](https://github.com/xxxioc-116/CampusTeam/pull/36) |
 | B2 代码贡献质量 | 6 | 5 | [真实 API 适配](https://github.com/xxxioc-116/CampusTeam/commit/ef8dff302a80daf66bf934a68630b9d155dbee75)；[安全整改](https://github.com/xxxioc-116/CampusTeam/commit/d3ba77e40f037a0de0d7ab39a57013fb109306d9) |
-| B3 PR 规范 | 5 | 4 | [PR #30](https://github.com/xxxioc-116/CampusTeam/pull/30)；[PR #36](https://github.com/xxxioc-116/CampusTeam/pull/36)；[#45 独立 PR #48](https://github.com/xxxioc-116/CampusTeam/pull/48) |
+| B3 PR 规范 | 5 | 4 | 作者 PR [#30](https://github.com/xxxioc-116/CampusTeam/pull/30)、[#36](https://github.com/xxxioc-116/CampusTeam/pull/36)、[#48](https://github.com/xxxioc-116/CampusTeam/pull/48) 已合并；本 PR #47 合并后达到 4 个 |
 | B4 Code Review | 5 | 4 | [#29 Request changes](https://github.com/xxxioc-116/CampusTeam/pull/29#pullrequestreview-5665877730)；[#37 Approve](https://github.com/xxxioc-116/CampusTeam/pull/37#pullrequestreview-5684610130)；[#46](https://github.com/xxxioc-116/CampusTeam/pull/46)、[#49](https://github.com/xxxioc-116/CampusTeam/pull/49) 实质评审 |
 | B5 测试与缺陷 | 3 | 3 | [画像快照回归测试](https://github.com/xxxioc-116/CampusTeam/commit/5092ce59f1407b815aa35c020465ee9431b1cd4c) |
 | B6 协作与文档 | 3 | 3 | [PR #34 第二部分](https://github.com/xxxioc-116/CampusTeam/commit/58a68d7e8ac38e55d31035c0835746a5de7ea93c) |
