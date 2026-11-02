@@ -5,7 +5,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Application, AuditLog, Invitation, Project, Team, TeamMember, User
+from .models import Application, AuditLog, Invitation, Project, RequestStatus, Team, TeamMember, User
 from .permissions import IsAdminRole, IsProjectOwnerOrReadOnly
 from .serializers import (
     ApplicationSerializer,
@@ -137,11 +137,26 @@ class TeamInvitationView(generics.GenericAPIView):
         return Response(InvitationSerializer(invitation).data, status=201)
 
 
+class ReceivedInvitationListView(generics.ListAPIView):
+    serializer_class = InvitationSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return Invitation.objects.filter(invitee=self.request.user).select_related(
+            "team", "team__project", "inviter", "invitee"
+        ).order_by("-created_at")
+
+
 class InvitationTransitionView(generics.GenericAPIView):
     serializer_class = StatusTransitionSerializer
 
     def post(self, request, pk):
         instance = generics.get_object_or_404(Invitation.objects.select_related("team", "team__project", "invitee", "inviter"), pk=pk)
+        if instance.invitee_id != request.user.id and instance.inviter_id != request.user.id:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("无权处理该邀请")
+        if instance.status != RequestStatus.PENDING:
+            return Response({"code": "invitation_already_processed", "message": "邀请已处理，请勿重复操作", "details": {}}, status=409)
         serializer = self.get_serializer(data=request.data, context={"instance": instance})
         serializer.is_valid(raise_exception=True)
         transition_request(instance, serializer.validated_data["action"], request.user)
